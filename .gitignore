@@ -1,0 +1,16 @@
+
+# ignore all .txt .Rhistory .RData files
+*.txt
+*.Rhistory
+*.RData
+
+
+# Folders to ignore
+material/*
+data/*
+figures/*
+output/*
+projects/*
+
+# Individual files
+act\ google\ movement.xlsx
