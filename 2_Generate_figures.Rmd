@@ -1,0 +1,68 @@
+# 2_Generate_figures.Rmd#
+
+This script is to generate figures for Simple HIV model.
+
+```{r Generate figures for number of new infections}
+
+yscaleFactor <- 100
+
+newinfectionfig<-ggplot(data = newinfectionresults,          
+       aes(x = timestep, y = newHIV, colour = scenarios, group = scenarios)) +  
+  # in the long-format output dataset, the number in each compartment
+  # is in the "value" column and the compartment the number relates 
+  # to is in the "variable" column. We are telling ggplot to assign a 
+  # different colour to each compartment/group, which automatically 
+  # generates a legend
+  geom_line() +                                                          
+  # we want to represent the data over time as lines. 
+  # This command automatically looks to the specifications saved
+  # in the ggplot command above to know which data to plot
+  xlab(paste0("Time (", projectSpecs$stepsize), ")")+                          # add label for x axis
+  ylab("Number of new HIV infections") +
+  labs(title = paste("Impact of different scenarios on HIV epidemic"))+
+  scale_x_continuous(breaks = 0:(projectSpecs$steps-1), 
+                     labels = c(projectSpecs$startyear,
+                       as.character(1:(projectSpecs$steps-1))))+
+  ylim(0,ceiling(max(newinfectionresults$newHIV)/yscaleFactor) * yscaleFactor)
+    
+newinfectionfig
+#Is something wrong with file path?
+SaveFigure <- function(folder, filename, figure, 
+    format = ".png", width = 2500, 
+    height = 2500, units = "px", ...) {
+    ggsave(file.path(folder, paste(filename, format, sep = "")), 
+      plot = figure, width = width, height = height, units = units, ...)
+}
+SaveFigure(figFolder,"new_HIV_infection",newinfectionfig)
+#png("new_HIV_infection_in_2020.png",width = 2500, 
+#    height = 2500, units = "px")
+
+```
+
+```{r Generate figures for total number of infections}
+
+totalinfectionfig<-ggplot(data = totalinfectionresults,          
+       aes(x = timestep, y = totalHIV, colour = scenarios, group = scenarios)) +  
+  # in the long-format output dataset, the number in each compartment
+  # is in the "value" column and the compartment the number relates 
+  # to is in the "variable" column. We are telling ggplot to assign a 
+  # different colour to each compartment/group, which automatically 
+  # generates a legend
+  geom_line() +                                                          
+  # we want to represent the data over time as lines. 
+  # This command automatically looks to the specifications saved
+  # in the ggplot command above to know which data to plot
+  xlab("Time (month)")+                          # add label for x axis
+  ylab("Total number of HIV infections in AU") +
+  labs(title = paste("Impact of different scenarios on HIV epidemic in 2020"))+
+  scale_x_continuous(breaks = 0:13, 
+                     labels = c('2019','Jan', 'Feb', 'Mar', 'Apr', 
+                                'May', 'Jun', 'Jul','Aug', 'Sep', 'Oct', 'Nov',
+                                'Dec','Jan 2021'))+
+  ylim(20000,23000)
+totalinfectionfig
+SaveFigure(figFolder,"Total_HIV_infection_in_2020",newinfectionfig)
+
+```
+
+

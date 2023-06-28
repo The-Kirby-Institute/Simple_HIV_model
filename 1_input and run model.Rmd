@@ -1,0 +1,139 @@
+# 1_input and run model.Rmd#
+
+This script is to input all the data and run the SIMPLE HIV model for a specified
+project.
+
+```{r Initialise}
+##setwd("C:/Users/wrx05/Documents/GitHub/phdproject/simplehivmodel")
+
+#######################r initialization####################
+# Clear workspace
+rm(list=ls()) 
+
+# Source to current directory and set working directory
+basePath <- getwd()
+
+# Restart R and set working directory to source file location. 
+
+library(ggplot2)
+
+##r User inputs
+##select project
+selectedproject<- "COVID-19impact"
+
+# Various directories
+dataFolder <- file.path(basePath,"projects", selectedproject)
+resultsFolder <- file.path(basePath,"projects", selectedproject, "output")
+figFolder <- file.path(resultsFolder,"projects", selectedproject,"figures")
+Rcode <- file.path(basePath, "code") 
+
+# Load standard libraries, key functions and options
+# source(file.path(Rcode, "LoadLibrary.R"))
+# source(file.path(Rcode, "DataLibraries.R"))
+source(file.path(Rcode, "SimpleHiv.R"))
+source(file.path(Rcode, "BetaOption.R"))
+source(file.path(Rcode, "Parameters.R"))
+
+```
+
+
+```{r Input}
+# Specify project input files and load them
+hivdefaultFile<- file.path(dataFolder,  "hiv_default_para.csv")
+hivDefaultpara<-read.csv(hivdefaultFile,fileEncoding = 'UTF-8-BOM')
+
+hivfixeddataFile<- file.path(dataFolder,  "hiv_fixed_data.csv")
+hivFixeddata<-read.csv(hivfixeddataFile,fileEncoding = 'UTF-8-BOM')
+
+hivtimeseriesFile<- file.path(dataFolder,  "hiv_time_series_data_test.csv")
+hivTimeseries<-read.csv(hivtimeseriesFile,fileEncoding = 'UTF-8-BOM')
+
+specificationsFile<- file.path(dataFolder,  "project_specs.csv")
+projectSpecs<-read.csv(specificationsFile,fileEncoding = 'UTF-8-BOM')
+#####data<-cbind(data1,data2)
+
+# From project files extract key project parameters ----------------------------
+
+times<- as.numeric(projectSpecs$steps) 
+startyear<- as.numeric(projectSpecs$startyear) 
+projectParams <- Parameters(hivDefaultpara, hivFixeddata, hivTimeseries, projectSpecs) #Default params
+
+adjustedPara <- projectParams
+
+# Set-up initial conditions - same for all scenarios
+initial_state_values<-as.list(c(N=hivFixeddata$value[hivFixeddata$Parameter == "plhiv"],
+                        I=hivFixeddata$value[10],
+                        d=hivFixeddata$value[2]))
+
+##############debugonce(SimpleHIV)
+```
+
+```{r Set-up scenarios}
+
+#Script for reading scenario parameters returning a list of parameter sets
+#load scenarios
+source(file.path(dataFolder, "Scenarios.R"))
+scenarios <- GenerateScenarios(adjustedPara)
+projectSpecs$nscenarios <- length(scenarios)
+##For scenario 2 model without COVID-19
+
+```
+
+
+
+```{r running model}
+
+#Run model for all scenarios at once
+##Generate the number of new infections per time step in different scenarios
+newinfectionresults<-data.frame( 
+                       timestep = integer(),
+                       scenarios = character(),
+                       newHIV = numeric())
+for (ii in 1:projectSpecs$nscenarios) {
+  output<- SimpleHIV(times=times, 
+                     state = initial_state_values,
+                     parameters = scenarios[[ii]])
+  newinfectionresults<-rbind(newinfectionresults,data.frame( 
+                       timestep = c(0:(times-1)),
+                       scenarios = ii,
+                       newHIV = output$I))
+}
+
+ylabels <- c()
+for (ii in 1:projectSpecs$nscenarios) {
+    ylabels[ii] <- scenarios[[ii]]$label
+}
+
+newinfectionresults$scenarios<-factor(newinfectionresults$scenarios,levels =  
+                                      c(1,2),labels = c("With COVID-19 impact", 
+                                      "Without COVID-19 impact"))
+
+##Generate the number of total infections per timestep in different scenarios
+totalinfectionresults<-data.frame( 
+                       timestep = integer(),
+                       scenarios = character(),
+                       totalHIV = numeric())
+
+for (ii in 1:projectSpecs$nscenarios) {
+  output<- SimpleHIV(times=times, 
+                     state = initial_state_values,
+                     parameters = scenarios[[ii]])
+  totalinfectionresults<-rbind(totalinfectionresults,data.frame( 
+                               timestep = c(0:times),
+                               scenarios = ii,
+                               totalHIV = output$N))
+}
+
+totalinfectionresults$scenarios<-factor(totalinfectionresults$scenarios,levels =    
+                                        c(1,2),labels = c("With COVID-19 impact",
+                                        "Without COVID-19 impact"))
+
+#Save output in some form Rda file and/or csv
+#write.csv(newinfectionresults, file = file.path(resultsFolder, "newinfection_results.csv"))
+
+#write.csv(totalinfectionresults, file = file.path(resultsFolder, "totalinfection_results.csv"))
+
+```
+
+
+
