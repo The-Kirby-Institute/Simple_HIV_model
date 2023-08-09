@@ -59,11 +59,10 @@ cumulatedinfectionfig<-ggplot(data = cumulatedinfectionresults,
   xlab("Time (month)")+                          # add label for x axis
   ylab("Cumulated number of HIV infections in AU") +
   labs(title = paste("Impact of different scenarios on HIV epidemic in 2020"))+
-  scale_x_continuous(breaks = 0:13, 
-                     labels = c('2019','Jan', 'Feb', 'Mar', 'Apr', 
-                                'May', 'Jun', 'Jul','Aug', 'Sep', 'Oct', 'Nov',
-                                'Dec','Jan 2021'))+
-  ylim(20000,23000)
+  scale_x_continuous(breaks = 0:(projectSpecs$steps-1), 
+                     labels = c(projectSpecs$startyear,
+                     as.character(1:(projectSpecs$steps-1))))+
+  ylim(signif(max(cumulatedinfectionresults$cumulatedHIV),digits = 1),signif(max(cumulatedinfectionresults$cumulatedHIV),digits = 2))
 cumulatedinfectionfig
 SaveFigure(figFolder,"Cumulated_HIV_infection_in_2020",newinfectionfig)
 
