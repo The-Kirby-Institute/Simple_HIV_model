@@ -23,7 +23,7 @@ selectedproject<- "COVID-19impact"
 projectFolder <- file.path(basePath,"projects", selectedproject)
 dataFolder <- file.path(basePath,"projects", selectedproject,"data")
 resultsFolder <- file.path(basePath,"projects", selectedproject, "output")
-figFolder <- file.path(resultsFolder,"projects", selectedproject,"figures")
+figFolder <- file.path(basePath,"projects", selectedproject,"figures")
 Rcode <- file.path(basePath, "code") 
 
 # Load standard libraries, key functions and options
