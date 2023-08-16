@@ -21,10 +21,15 @@ newinfectionfig<-ggplot(data = newinfectionresults,
   xlab(paste0("Time (", projectSpecs$stepsize, ")"))+                          # add label for x axis
   ylab("Number of new HIV infections") +
   labs(title = paste("Impact of different scenarios on HIV epidemic"))+
-  scale_x_continuous(breaks = 0:(projectSpecs$steps-1), 
-                     labels = c(projectSpecs$startyear,
-                     as.character(1:(projectSpecs$steps-1))))+
+  scale_x_continuous(breaks = c(1,7,13,19,25,31), 
+                     labels = c("Jan-2020","July-2020","Jan-2021","July-2021","Jan-2022","July-2022"))+
   ylim(0,signif(max(newinfectionresults$newHIV)*2,1))
+
+#General code to generate figure:  
+#  scale_x_continuous(breaks = 0:(projectSpecs$steps-1), 
+#                     labels = c(projectSpecs$startyear,
+#                     as.character(1:(projectSpecs$steps-1))))+
+#  ylim(0,signif(max(newinfectionresults$newHIV)*2,1))
 
 newinfectionfig
 #yscaleFactor <- 100
@@ -38,6 +43,8 @@ SaveFigure <- function(folder, filename, figure,
       plot = figure, width = width, height = height, units = units, ...)
 }
 SaveFigure(figFolder,"new_HIV_infection",newinfectionfig)
+ggsave( "new_HIV_infection1.png", 
+      plot = newinfectionfig,  dpi = 300)
 #png("new_HIV_infection_in_2020.png",width = 2500, 
 #    height = 2500, units = "px")
 
