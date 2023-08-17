@@ -35,14 +35,18 @@ newinfectionfig
 #yscaleFactor <- 100
 #ylim(0,ceiling(max(newinfectionresults$newHIV)/yscaleFactor) * yscaleFactor)
 
+
 SaveFigure <- function(folder, filename, figure, 
-    format = ".png", width = 15, 
+    format = ".png", width = 20, 
     height = 10, units = "cm", ...) {
     ggsave(file.path(folder, paste(filename, format, sep = "")), 
       plot = figure, width = width, height = height, units = units, ...)
 }
-SaveFigure(figFolder,"new_HIV_infection1",newinfectionfig)
 
+# If figure not already created make sure it is not overwritten
+if (!file.exists(file.path(figFolder, "new_HIV_infection1.png"))) {
+    SaveFigure(figFolder,"new_HIV_infection1",newinfectionfig)
+}
 
 
 ```
@@ -71,7 +75,12 @@ cumulatedinfectionfig<-ggplot(data = cumulatedinfectionresults,
 #                     as.character(1:(projectSpecs$steps-1))))+
   ylim(signif(max(cumulatedinfectionresults$cumulatedHIV),digits = 1),signif(max(cumulatedinfectionresults$cumulatedHIV),digits = 2))
 cumulatedinfectionfig
-SaveFigure(figFolder,"Cumulated_HIV_infection_in_2020",cumulatedinfectionfig)
+
+# If figure not already created make sure it is not overwritten
+if (!file.exists(file.path(figFolder, "Cumulated_HIV_infection1.png"))) {
+    SaveFigure(figFolder,"Cumulated_HIV_infection1",cumulatedinfectionfig)
+}
+
 
 ```
 
