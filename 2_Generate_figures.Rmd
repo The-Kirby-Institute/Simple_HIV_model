@@ -18,7 +18,7 @@ newinfectionfig<-ggplot(data = newinfectionresults,
   # we want to represent the data over time as lines. 
   # This command automatically looks to the specifications saved
   # in the ggplot command above to know which data to plot
-  xlab(paste0("Time (", projectSpecs$stepsize, ")"))+                          # add label for x axis
+  xlab(paste0("Time (", projectSpecs$stepsize, ")"))+    # add label for x axis
   ylab("Number of new HIV infections") +
   labs(title = paste("Impact of different scenarios on HIV epidemic"))+
   scale_x_continuous(breaks = c(1,7,13,19,25,31), 
@@ -44,8 +44,8 @@ SaveFigure <- function(folder, filename, figure,
 }
 
 # If figure not already created make sure it is not overwritten
-if (!file.exists(file.path(figFolder, "new_HIV_infection1.png"))) {
-    SaveFigure(figFolder,"new_HIV_infection1",newinfectionfig)
+if (!file.exists(file.path(figFolder, "new_HIV_infection2.png"))) {
+    SaveFigure(figFolder,"new_HIV_infection2",newinfectionfig)
 }
 
 

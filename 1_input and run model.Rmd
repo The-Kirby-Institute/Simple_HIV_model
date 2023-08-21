@@ -104,8 +104,7 @@ for (ii in 1:projectSpecs$nscenarios) {
 }
 
 newinfectionresults$scenarios<-factor(newinfectionresults$scenarios,levels =  
-                                      c(1,2),labels = c("With COVID-19 impact", 
-                                      "Without COVID-19 impact"))
+                                      c(1:projectSpecs$nscenarios),labels = ylabels)
 
 ##Generate the number of cumulated infections per timestep in different scenarios
 cumulatedinfectionresults<-data.frame( 
@@ -123,9 +122,8 @@ for (ii in 1:projectSpecs$nscenarios) {
                                cumulatedHIV = output$N))
 }
 
-cumulatedinfectionresults$scenarios<-factor(cumulatedinfectionresults$scenarios,levels =    
-                                        c(1,2),labels = c("With COVID-19 impact",
-                                        "Without COVID-19 impact"))
+cumulatedinfectionresults$scenarios<-factor(cumulatedinfectionresults$scenarios,levels =  
+                                      c(1:projectSpecs$nscenarios),labels = ylabels)
 
 #Save output in some form Rda file and/or csv
 #write.csv(newinfectionresults, file = file.path(resultsFolder, "newinfection_results.csv"))
