@@ -126,9 +126,13 @@ cumulatedinfectionresults$scenarios<-factor(cumulatedinfectionresults$scenarios,
                                       c(1:projectSpecs$nscenarios),labels = ylabels)
 
 #Save output in some form Rda file and/or csv
-#write.csv(newinfectionresults, file = file.path(resultsFolder, "newinfection_results.csv"))
-
-#write.csv(cumulatedinfectionresults, file = file.path(resultsFolder, "cumulatedinfection_results.csv"))
+# If file not already created make sure it is not overwritten
+if (!file.exists(file.path(resultsFolder, "newinfection_results.csv"))) {
+write.csv(newinfectionresults, file = file.path(resultsFolder, "newinfection_results.csv"))
+}
+if (!file.exists(file.path(resultsFolder, "cumulatedinfection_results.csv"))) {
+write.csv(cumulatedinfectionresults, file = file.path(resultsFolder, "cumulatedinfection_results.csv"))
+}
 
 ```
 

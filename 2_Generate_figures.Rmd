@@ -45,7 +45,7 @@ SaveFigure <- function(folder, filename, figure,
 
 # If figure not already created make sure it is not overwritten
 if (!file.exists(file.path(figFolder, "new_HIV_infection2.png"))) {
-    SaveFigure(figFolder,"new_HIV_infection2",newinfectionfig)
+    SaveFigure(figFolder,"new_HIV_infection3",newinfectionfig)
 }
 
 
@@ -77,8 +77,8 @@ cumulatedinfectionfig<-ggplot(data = cumulatedinfectionresults,
 cumulatedinfectionfig
 
 # If figure not already created make sure it is not overwritten
-if (!file.exists(file.path(figFolder, "Cumulated_HIV_infection1.png"))) {
-    SaveFigure(figFolder,"Cumulated_HIV_infection1",cumulatedinfectionfig)
+if (!file.exists(file.path(figFolder, "Cumulated_HIV_infection2.png"))) {
+    SaveFigure(figFolder,"Cumulated_HIV_infection2",cumulatedinfectionfig)
 }
 
 
