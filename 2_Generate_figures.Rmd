@@ -65,7 +65,7 @@ cumulatedinfectionfig<-ggplot(data = cumulatedinfectionresults,
   # This command automatically looks to the specifications saved
   # in the ggplot command above to know which data to plot
   xlab("Time (month)")+                          # add label for x axis
-  ylab("Cumulated number of HIV infections in AU") +
+  ylab("Number of PLHIV in AU") +
   labs(title = paste("Impact of different scenarios on HIV epidemic in 2020"))+
   scale_x_continuous(breaks = c(1,7,13,19,25,31), 
                      labels = c("Jan-2020","July-2020","Jan-2021","July-2021","Jan-2022","July-2022"))+

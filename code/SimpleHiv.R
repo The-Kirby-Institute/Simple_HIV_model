@@ -54,8 +54,8 @@ SimpleHIV<-function(times,state, parameters){
       (alpha_t[i]/alpha0)*
       ((1-epsilon_condom*chi_t[i]*chi_0)/(1-epsilon_condom*chi_0))*
       ((1-d[i]*tau[i]*sigma[i]*phi)*(1-omega0*omega_p[i]*epsilon_PrEP))
-    N[i+1]=N[i]+I[i]+IM[i]-EM[i]-Death[i]
-    d[i+1]=(N[i]*d[i]+(I[i] +(1-d[i])*N[i])*T*T_p[i])/(N[i]+I[i]+IM[i]-EM[i]-Death[i])}
+    N[i+1]=(N[i]+I[i]+IM[i]-EM[i])*(1-Death[i])
+    d[i+1]=(N[i]*d[i]+(I[i] +(1-d[i])*N[i])*T*T_p[i])/((N[i]+I[i]+IM[i]-EM[i])*(1-Death[i]))}
     returnedList<-list(I, N)
     names(returnedList) <- c("I", "N")
     return(returnedList) 
