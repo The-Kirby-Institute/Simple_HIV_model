@@ -12,7 +12,7 @@ rm(list=ls())
 
 # Source to current directory and set working directory
 basePath <- getwd()
-
+library(dplyr)
 # Restart R and set working directory to source file location. 
 
 ##r User inputs
@@ -105,35 +105,46 @@ for (ii in 1:projectSpecs$nscenarios) {
 
 newinfectionresults$scenarios<-factor(newinfectionresults$scenarios,levels =  
                                       c(1:projectSpecs$nscenarios),labels = ylabels)
+###add a column of cumulated number of new infections
+#mutate(group_by(newinfectionresults,scenarios), csum=cumsum(newHIV))
+newinfectionresults<- newinfectionresults %>% group_by(scenarios) %>% mutate(csum = cumsum(newHIV))
+###add a colum of the variable "year"###
+newinfectionresults$year<-c(2019,rep(2020,12),rep(2021,12),rep(2022,8),2019,rep(2020,12),rep(2021,12),rep(2022,8),2019,rep(2020,12),rep(2021,12),rep(2022,8))
+newinfections_peryear <- newinfectionresults %>%
+group_by(scenarios,year) %>%
+  summarise(Sum=sum(newHIV))
 
 ##Generate the number of cumulated infections per timestep in different scenarios
-cumulatedinfectionresults<-data.frame( 
+totalinfectionresults<-data.frame( 
                        timestep = integer(),
                        scenarios = character(),
-                       cumulatedHIV = numeric())
+                       totalHIV = numeric())
 
 for (ii in 1:projectSpecs$nscenarios) {
   output<- SimpleHIV(times=times, 
                      state = initial_state_values,
                      parameters = scenarios[[ii]])
-  cumulatedinfectionresults<-rbind(cumulatedinfectionresults,data.frame( 
+  totalinfectionresults<-rbind(totalinfectionresults,data.frame( 
                                timestep = c(0:times),
                                scenarios = ii,
-                               cumulatedHIV = output$N))
+                               totalHIV = output$N))
 }
 
-cumulatedinfectionresults$scenarios<-factor(cumulatedinfectionresults$scenarios,levels =  
+totalinfectionresults$scenarios<-factor(totalinfectionresults$scenarios,levels =  
                                       c(1:projectSpecs$nscenarios),labels = ylabels)
+
 
 #Save output in some form Rda file and/or csv
 # If file not already created make sure it is not overwritten
-if (!file.exists(file.path(resultsFolder, "newinfection_results.csv"))) {
-write.csv(newinfectionresults, file = file.path(resultsFolder, "newinfection_results.csv"))
+if (!file.exists(file.path(resultsFolder, "newinfection_results1213_2.csv"))) {
+write.csv(newinfectionresults, file = file.path(resultsFolder, "newinfection_results1213_2.csv"))
 }
-if (!file.exists(file.path(resultsFolder, "cumulatedinfection_results.csv"))) {
-write.csv(cumulatedinfectionresults, file = file.path(resultsFolder, "cumulatedinfection_results.csv"))
+if (!file.exists(file.path(resultsFolder, "totalinfection_results1213_2.csv"))) {
+write.csv(totalinfectionresults, file = file.path(resultsFolder, "totalinfection_results1213_2.csv"))
 }
-
+if (!file.exists(file.path(resultsFolder, "newinfections_peryear1213_2.csv"))) {
+write.csv(newinfections_peryear, file = file.path(resultsFolder, "newinfections_peryear1213_2.csv"))
+}
 ```
 
 
