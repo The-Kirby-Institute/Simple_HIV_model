@@ -7,20 +7,8 @@ This script is to generate figures for Simple HIV model.
 #source(file.path(basePath, "1_input and run model.Rmd"))
 library(ggplot2)
 
-# load HIV estimates data
-HIV_cascade_EstimatesdataFile<- file.path(dataFolder,  "HIVcascadeEstimates_2022.csv")
-HIV_cascade_Estimatesdata<-read.csv(HIV_cascade_EstimatesdataFile,fileEncoding = 'UTF-8-BOM')
-Estimatesdata<-data.frame(x = numeric(),
-                       infectedHIV = numeric(),
-                       infectedHIV_lower = numeric(),
-                       infectedHIV_upper = numeric())
-Estimatesdata<-rbind(Estimatesdata,data.frame(
-                x=c(0,12,24,36),
-                infectedHIV=HIV_cascade_Estimatesdata$value[40:43],
-                infectedHIV_lower = HIV_cascade_Estimatesdata$lower[40:43],
-                infectedHIV_upper = HIV_cascade_Estimatesdata$upper[40:43]))
-
 ###generate figure for number of new infections### 
+##The optimal result##
 newinfectionfig<-ggplot(data = newinfectionresults,          
   aes(x = timestep, y = newHIV, colour = scenarios, group = scenarios)) +  
   geom_line() +          
@@ -32,6 +20,27 @@ newinfectionfig<-ggplot(data = newinfectionresults,
   ylim(0,signif(max(newinfectionresults$newHIV)*2,1))
 
 newinfectionfig
+
+##Simulation results##
+newinfectionfig_sim<- ggplot(data = infectionresults_sim_filter, aes(x = timestep, y = newHIV, 
+  colour = scenarios, fill = scenarios, group = interaction(scenarios, numsim)))+
+geom_line() +
+  # geom_ribbon(aes(ymin = quantile(infected, 0.025), 
+  #   ymax = quantile(infected, 0.975))) + 
+  geom_line(data = (infectionresults %>% filter(scenarios == "Without COVID-19 impact and remain")), 
+    aes(group = 1), colour = "blue", size = 1.1) +
+  geom_line(data = (infectionresults %>% filter(scenarios == "With COVID-19 impact")), 
+    aes(group = 1), colour = "black", size = 1.1) +
+  expand_limits(y = c(0, NA)) + 
+  scale_x_continuous(breaks = c(1,7,13,19,25,31), 
+                     labels = c("Jan-2020","July-2020","Jan-2021","July-2021","Jan-2022","July-2022"))+ 
+  scale_colour_manual(name = "", 
+    breaks = c("Without COVID-19 impact and remain", "With COVID-19 impact"), 
+    values = c("cornflowerblue", "gray"),
+    labels = c("Without COVID-19 pandemic", "With COVID-19 pandemic")) +
+  xlab(paste0("Time (", projectSpecs$stepsize, ")")) + ylab("Number of new HIV infections") 
+newinfectionfig_sim<- newinfectionfig_sim+ theme_classic()
+newinfectionfig_sim
 
 ###generate figure for number of cumulated new infections###
 cumulatedinfectionfig<-ggplot(data = newinfectionresults,          
@@ -55,16 +64,30 @@ SaveFigure <- function(folder, filename, figure,
 }
 
 # If figure not already created make sure it is not overwritten
-if (!file.exists(file.path(figFolder, "cumulated_HIV_infection1213_2.png"))) {
-    SaveFigure(figFolder,"cumulated_HIV_infection1213_2",cumulatedinfectionfig)
+if (!file.exists(file.path(figFolder, "cumulated_HIV_infection20240117.png"))) {
+    SaveFigure(figFolder,"cumulated_HIV_infection20240117",cumulatedinfectionfig)
 }
-if (!file.exists(file.path(figFolder, "new_HIV_infection1213_2.png"))) {
-    SaveFigure(figFolder,"new_HIV_infection1213_2",newinfectionfig)
+if (!file.exists(file.path(figFolder, "new_HIV_infection20240117.png"))) {
+    SaveFigure(figFolder,"new_HIV_infection20240117",newinfectionfig)
 }
-
+if (!file.exists(file.path(figFolder, "new_HIV_infection_sim_20240304.png"))) {
+    SaveFigure(figFolder,"new_HIV_infection_sim_20240304",newinfectionfig_sim)
+}
 ```
 
 ```{r Generate figures for cumulated number of infections}
+# load HIV estimates data
+HIV_cascade_EstimatesdataFile<- file.path(dataFolder,  "HIVcascadeEstimates_2022.csv")
+HIV_cascade_Estimatesdata<-read.csv(HIV_cascade_EstimatesdataFile,fileEncoding = 'UTF-8-BOM')
+Estimatesdata<-data.frame(x = numeric(),
+                       infectedHIV = numeric(),
+                       infectedHIV_lower = numeric(),
+                       infectedHIV_upper = numeric())
+Estimatesdata<-rbind(Estimatesdata,data.frame(
+                x=c(0,12,24,36),
+                infectedHIV=HIV_cascade_Estimatesdata$value[40:43],
+                infectedHIV_lower = HIV_cascade_Estimatesdata$lower[40:43],
+                infectedHIV_upper = HIV_cascade_Estimatesdata$upper[40:43]))
 
 ###generate figure for number of total infections###
 totalinfectionfig<-ggplot()+
@@ -85,12 +108,39 @@ totalinfectionfig<-ggplot()+
 
 totalinfectionfig
 
-
+##simulation results##
+totalinfectionfig_sim<- ggplot(data = infectionresults_sim, aes(x = timestep, y = totalHIV, 
+  colour = scenarios, fill = scenarios, group = interaction(scenarios, numsim)))+
+geom_line() +
+  # geom_ribbon(aes(ymin = quantile(infected, 0.025), 
+  #   ymax = quantile(infected, 0.975))) + 
+  geom_line(data = (infectionresults %>% filter(scenarios == "Without COVID-19 impact and remain")), 
+    aes(group = 1), colour = "blue", size = 1.1) +
+  geom_line(data = (infectionresults %>% filter(scenarios == "With COVID-19 impact")), 
+    aes(group = 1), colour = "black", size = 1.1) +
+  expand_limits(y = c(0, NA)) + 
+  scale_x_continuous(breaks = c(1,7,13,19,25,31), 
+                     labels = c("Jan-2020","July-2020","Jan-2021","July-2021","Jan-2022","July-2022"))+ 
+  scale_colour_manual(name = "", 
+    breaks = c("Without COVID-19 impact and remain", "With COVID-19 impact"), 
+    values = c("cornflowerblue", "gray"),
+    labels = c("Without Covid", "With Covid")) +
+  xlab(paste0("Time (", projectSpecs$stepsize, ")")) + ylab("Number of people living with HIV infections") 
+plot+ theme(panel.background = element_blank(),
+    panel.border = element_blank(), 
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(), 
+    axis.line = element_line(colour = "black")
+    )
+totalinfectionfig_sim<- totalinfectionfig_sim+ theme_classic()
+totalinfectionfig_sim
 # If figure not already created make sure it is not overwritten
-if (!file.exists(file.path(figFolder, "total_HIV_infection1215.png"))) {
-    SaveFigure(figFolder,"total_HIV_infection1215",totalinfectionfig)
+if (!file.exists(file.path(figFolder, "total_HIV_infection20240117.png"))) {
+    SaveFigure(figFolder,"total_HIV_infection20240117",totalinfectionfig)
 }
-
+if (!file.exists(file.path(figFolder, "total_HIV_infection_sim_AIDS.png"))) {
+    SaveFigure(figFolder,"total_HIV_infection_sim_AIDS",totalinfectionfig_sim)
+}
 
 ```
 
