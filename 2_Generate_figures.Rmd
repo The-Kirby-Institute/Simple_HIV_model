@@ -22,22 +22,24 @@ newinfectionfig<-ggplot(data = newinfectionresults,
 newinfectionfig
 
 ##Simulation results##
-newinfectionfig_sim<- ggplot(data = infectionresults_sim_filter, aes(x = timestep, y = newHIV, 
+newinfectionfig_sim<- ggplot(data = infectionresults_sim_filter_newHIV, aes(x = timestep, y = newHIV, 
   colour = scenarios, fill = scenarios, group = interaction(scenarios, numsim)))+
 geom_line() +
-  # geom_ribbon(aes(ymin = quantile(infected, 0.025), 
-  #   ymax = quantile(infected, 0.975))) + 
+   #geom_ribbon(aes(ymin = quantile(newHIV, 0.025), 
+    # ymax = quantile(newHIV, 0.975))) + 
   geom_line(data = (infectionresults %>% filter(scenarios == "Without COVID-19 impact and remain")), 
     aes(group = 1), colour = "blue", size = 1.1) +
   geom_line(data = (infectionresults %>% filter(scenarios == "With COVID-19 impact")), 
     aes(group = 1), colour = "black", size = 1.1) +
+  geom_line(data = (infectionresults %>% filter(scenarios == "Without COVID-19 impact and with prep promotion")), 
+    aes(group = 1), colour = "green", size = 1.1) +
   expand_limits(y = c(0, NA)) + 
   scale_x_continuous(breaks = c(1,7,13,19,25,31), 
                      labels = c("Jan-2020","July-2020","Jan-2021","July-2021","Jan-2022","July-2022"))+ 
   scale_colour_manual(name = "", 
-    breaks = c("Without COVID-19 impact and remain", "With COVID-19 impact"), 
-    values = c("cornflowerblue", "gray"),
-    labels = c("Without COVID-19 pandemic", "With COVID-19 pandemic")) +
+    breaks = c("Without COVID-19 impact and remain", "With COVID-19 impact","Without COVID-19 impact and with prep promotion"), 
+    values = c("cornflowerblue", "gray","#CCFFE5"),
+    labels = c("Without COVID-19 pandemic", "With COVID-19 pandemic","With PrEP promotion")) +
   xlab(paste0("Time (", projectSpecs$stepsize, ")")) + ylab("Number of new HIV infections") 
 newinfectionfig_sim<- newinfectionfig_sim+ theme_classic()
 newinfectionfig_sim
@@ -70,8 +72,8 @@ if (!file.exists(file.path(figFolder, "cumulated_HIV_infection20240117.png"))) {
 if (!file.exists(file.path(figFolder, "new_HIV_infection20240117.png"))) {
     SaveFigure(figFolder,"new_HIV_infection20240117",newinfectionfig)
 }
-if (!file.exists(file.path(figFolder, "new_HIV_infection_sim_20240304.png"))) {
-    SaveFigure(figFolder,"new_HIV_infection_sim_20240304",newinfectionfig_sim)
+if (!file.exists(file.path(figFolder, "new_HIV_infection_sim_20240305_3scenarios.png"))) {
+    SaveFigure(figFolder,"new_HIV_infection_sim_20240305_3scenarios",newinfectionfig_sim)
 }
 ```
 
@@ -109,22 +111,25 @@ totalinfectionfig<-ggplot()+
 totalinfectionfig
 
 ##simulation results##
-totalinfectionfig_sim<- ggplot(data = infectionresults_sim, aes(x = timestep, y = totalHIV, 
+totalinfectionfig_sim<- ggplot(data = infectionresults_sim_filter_totalHIV, aes(x = timestep, y = totalHIV, 
   colour = scenarios, fill = scenarios, group = interaction(scenarios, numsim)))+
 geom_line() +
   # geom_ribbon(aes(ymin = quantile(infected, 0.025), 
   #   ymax = quantile(infected, 0.975))) + 
+  geom_line(data = (infectionresults %>% filter(scenarios == "Without COVID-19 impact and with prep promotion")), 
+    aes(group = 1), colour = "green", size = 1.0) +
   geom_line(data = (infectionresults %>% filter(scenarios == "Without COVID-19 impact and remain")), 
-    aes(group = 1), colour = "blue", size = 1.1) +
+    aes(group = 1), colour = "blue", size = 1.0) +
   geom_line(data = (infectionresults %>% filter(scenarios == "With COVID-19 impact")), 
-    aes(group = 1), colour = "black", size = 1.1) +
+    aes(group = 1), colour = "black", size = 1.0) +
+  
   expand_limits(y = c(0, NA)) + 
   scale_x_continuous(breaks = c(1,7,13,19,25,31), 
                      labels = c("Jan-2020","July-2020","Jan-2021","July-2021","Jan-2022","July-2022"))+ 
   scale_colour_manual(name = "", 
-    breaks = c("Without COVID-19 impact and remain", "With COVID-19 impact"), 
-    values = c("cornflowerblue", "gray"),
-    labels = c("Without Covid", "With Covid")) +
+    breaks = c("Without COVID-19 impact and remain", "With COVID-19 impact","Without COVID-19 impact and with prep promotion"), 
+    values = c("cornflowerblue", "gray","#CCFFE5"),
+    labels = c("Without COVID-19 pandemic", "With COVID-19 pandemic","With PrEP promotion"))+
   xlab(paste0("Time (", projectSpecs$stepsize, ")")) + ylab("Number of people living with HIV infections") 
 plot+ theme(panel.background = element_blank(),
     panel.border = element_blank(), 
@@ -138,8 +143,8 @@ totalinfectionfig_sim
 if (!file.exists(file.path(figFolder, "total_HIV_infection20240117.png"))) {
     SaveFigure(figFolder,"total_HIV_infection20240117",totalinfectionfig)
 }
-if (!file.exists(file.path(figFolder, "total_HIV_infection_sim_AIDS.png"))) {
-    SaveFigure(figFolder,"total_HIV_infection_sim_AIDS",totalinfectionfig_sim)
+if (!file.exists(file.path(figFolder, "total_HIV_infection_sim_20240305_3scenarios1.png"))) {
+    SaveFigure(figFolder,"total_HIV_infection_sim_20240305_3scenarios",totalinfectionfig_sim)
 }
 
 ```
