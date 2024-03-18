@@ -128,6 +128,12 @@ group_by(scenarios,year) %>%
 infectionresults <- infectionresults %>%
 group_by(scenarios,year) %>%
   mutate(csum_year_diagnosis=cumsum(diagnosis))
+newinfections_peryear <- infectionresults %>%
+group_by(scenarios,year) %>%
+  summarise(Sum=round(sum(newHIV),0))
+diagnosis_peryear <- infectionresults %>%
+group_by(scenarios,year) %>%
+  summarise(Sum=round(sum(diagnosis),0))
 
 #Run model for all scenarios at once
 ##Generate the number of new infections per time step in different scenarios
@@ -160,9 +166,9 @@ newinfectionresults<- newinfectionresults %>% group_by(scenarios) %>% mutate(csu
 ###add a colum of the variable "year"###
 newinfectionresults$year<-c(2019,rep(2020,12),rep(2021,12),rep(2022,8),2019,rep(2020,12),rep(2021,12),rep(2022,8),2019,rep(2020,12),rep(2021,12),rep(2022,8))
 #newinfectionresults$year<-rep(c(rep("year0",3),rep("year1",12),rep("year2",12),rep("year3",6)),3)
-newinfections_peryear <- newinfectionresults %>%
-group_by(scenarios,year) %>%
-  summarise(Sum=sum(newHIV))
+#newinfections_peryear <- newinfectionresults %>%
+#group_by(scenarios,year) %>%
+#  summarise(Sum=sum(newHIV))
 
 ##Generate the number of total infections per timestep in different scenarios
 totalinfectionresults<-data.frame( 
@@ -467,10 +473,10 @@ newinfectionresults_sim<- newinfectionresults_sim %>% group_by(scenarios,numsim)
 
 ###add a colum of the variable "year" to represent###
 #newinfectionresults_sim$year<-rep(c(rep("year0",3),rep("year1",12),rep("year2",12),rep("year3",6)),2000)
-newinfectionresults_sim$year<-rep(c(rep(2019,1),rep(2020,12),rep(2021,12),rep(2022,8)),3000)
-newinfections_peryear_sim <- newinfectionresults_sim %>%
-group_by(scenarios,year,numsim) %>%
-  summarise(Sum=sum(newHIV))
+#newinfectionresults_sim$year<-rep(c(rep(2019,1),rep(2020,12),rep(2021,12),rep(2022,8)),3000)
+#newinfections_peryear_sim <- newinfectionresults_sim %>%
+#group_by(scenarios,year,numsim) %>%
+#  summarise(Sum=sum(newHIV))
 
 ###for all dataset
 infectionresults_sim<- infectionresults_sim %>% group_by(scenarios,numsim) %>% mutate(csum_infection = cumsum(newHIV))
@@ -484,6 +490,41 @@ group_by(scenarios,year,numsim) %>%
 infectionresults_sim <- infectionresults_sim %>%
 group_by(scenarios,year,numsim) %>%
   mutate(csum_year_diagnosis=cumsum(diagnosis))
+newinfections_peryear_sim <- infectionresults_sim %>%
+group_by(scenarios,year,numsim) %>%
+  summarise(Sum=sum(newHIV))
+diagnosis_peryear_sim <- infectionresults_sim %>%
+group_by(scenarios,year,numsim) %>%
+  summarise(Sum=sum(diagnosis))
+
+###create band for 95% interval##
+quantile_interval_band_newHIV<-data.frame( 
+                       timestep = integer(),
+                       lowerbound = numeric(),
+                       upperbound = numeric(),
+                       scenarios = character())
+for (ii in 1:(times)) {
+quantile_interval_band_newHIV<-rbind(quantile_interval_band_newHIV,data.frame(timestep = ii-1,
+                   lowerbound =  quantile((infectionresults_sim %>% filter(scenarios == "With COVID-19 impact", timestep == ii-1))$newHIV, probs = 0.025, names = FALSE),
+                   upperbound = quantile((infectionresults_sim %>% filter(scenarios == "With COVID-19 impact", timestep == ii-1))$newHIV, probs = 0.975, names = FALSE),
+                   scenarios = "With COVID-19 impact"))
+}
+
+
+for (ii in 1:(times)) {
+quantile_interval_band_newHIV<-rbind(quantile_interval_band_newHIV,data.frame(timestep = ii-1,
+                   lowerbound =  quantile((infectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and remain", timestep == ii-1))$newHIV, probs = 0.025, names = FALSE),
+                   upperbound = quantile((infectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and remain", timestep == ii-1))$newHIV, probs = 0.975, names = FALSE),
+                   scenarios = "Without COVID-19 impact and remain"))
+}
+
+for (ii in 1:(times)) {
+quantile_interval_band_newHIV<-rbind(quantile_interval_band_newHIV,data.frame(timestep = ii-1,
+                   lowerbound =  quantile((infectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and with prep promotion", timestep == ii-1))$newHIV, probs = 0.025, names = FALSE),
+                   upperbound = quantile((infectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and with prep promotion", timestep == ii-1))$newHIV, probs = 0.975, names = FALSE),
+                   scenarios = "Without COVID-19 impact and with prep promotion"))
+}
+
 
 ##select 5%-95% data at each timestep.##
 ##use one loop to filter all results for new infection##
@@ -594,26 +635,67 @@ cumuinfectionresults_95PI$withcovid_upper<-round(quantile((newinfectionresults_s
 cumuinfectionresults_95PI$withcovid_lower<-round(quantile((newinfectionresults_sim %>% filter(scenarios == "With COVID-19 impact", timestep == 32))$csum, probs = 0.025, names = FALSE),0)
 cumuinfectionresults_95PI
 
-newinfectionresults_peryear_95PI<-list()
-newinfectionresults_peryear_95PI$withoutcovid_value_2020<-round((newinfections_peryear %>% filter(scenarios =="Without COVID-19 impact and remain",year == 2020))$Sum,0)
-newinfectionresults_peryear_95PI$withoutcovid_upper_2020<-round(quantile((newinfections_peryear_sim %>% filter(scenarios == "Without COVID-19 impact and remain", year ==2020))$Sum, probs = 0.975, names = FALSE),0)
-newinfectionresults_peryear_95PI$withoutcovid_lower_2020<-round(quantile((newinfections_peryear_sim %>% filter(scenarios == "Without COVID-19 impact and remain", year ==2020))$Sum, probs = 0.025, names = FALSE),0)
-newinfectionresults_peryear_95PI$withoutcovid_value_2021<-round((newinfections_peryear %>% filter(scenarios =="Without COVID-19 impact and remain",year == 2021))$Sum,0)
-newinfectionresults_peryear_95PI$withoutcovid_upper_2021<-round(quantile((newinfections_peryear_sim %>% filter(scenarios == "Without COVID-19 impact and remain", year ==2021))$Sum, probs = 0.975, names = FALSE),0)
-newinfectionresults_peryear_95PI$withoutcovid_lower_2021<-round(quantile((newinfections_peryear_sim %>% filter(scenarios == "Without COVID-19 impact and remain", year ==2021))$Sum, probs = 0.025, names = FALSE),0)
-newinfectionresults_peryear_95PI$withoutcovid_value_2022<-round((newinfections_peryear %>% filter(scenarios =="Without COVID-19 impact and remain",year == 2022))$Sum,0)
-newinfectionresults_peryear_95PI$withoutcovid_upper_2022<-round(quantile((newinfections_peryear_sim %>% filter(scenarios == "Without COVID-19 impact and remain", year ==2022))$Sum, probs = 0.975, names = FALSE),0)
-newinfectionresults_peryear_95PI$withoutcovid_lower_2022<-round(quantile((newinfections_peryear_sim %>% filter(scenarios == "Without COVID-19 impact and remain", year ==2022))$Sum, probs = 0.025, names = FALSE),0)
+###number of new infections and diagnoses each year with 95% percentile interval###
 
-newinfectionresults_peryear_95PI$withcovid_value_2020<-round((newinfections_peryear %>% filter(scenarios =="With COVID-19 impact",year == 2020))$Sum,0)
-newinfectionresults_peryear_95PI$withcovid_upper_2020<-round(quantile((newinfections_peryear_sim %>% filter(scenarios == "With COVID-19 impact", year ==2020))$Sum, probs = 0.975, names = FALSE),0)
-newinfectionresults_peryear_95PI$withcovid_lower_2020<-round(quantile((newinfections_peryear_sim %>% filter(scenarios == "With COVID-19 impact", year ==2020))$Sum, probs = 0.025, names = FALSE),0)
-newinfectionresults_peryear_95PI$withcovid_value_2021<-round((newinfections_peryear %>% filter(scenarios =="With COVID-19 impact",year == 2021))$Sum,0)
-newinfectionresults_peryear_95PI$withcovid_upper_2021<-round(quantile((newinfections_peryear_sim %>% filter(scenarios == "With COVID-19 impact", year ==2021))$Sum, probs = 0.975, names = FALSE),0)
-newinfectionresults_peryear_95PI$withcovid_lower_2021<-round(quantile((newinfections_peryear_sim %>% filter(scenarios == "With COVID-19 impact", year ==2021))$Sum, probs = 0.025, names = FALSE),0)
-newinfectionresults_peryear_95PI$withcovid_value_2022<-round((newinfections_peryear %>% filter(scenarios =="With COVID-19 impact",year == 2022))$Sum,0)
-newinfectionresults_peryear_95PI$withcovid_upper_2022<-round(quantile((newinfections_peryear_sim %>% filter(scenarios == "With COVID-19 impact", year ==2022))$Sum, probs = 0.975, names = FALSE),0)
-newinfectionresults_peryear_95PI$withcovid_lower_2022<-round(quantile((newinfections_peryear_sim %>% filter(scenarios == "With COVID-19 impact", year ==2022))$Sum, probs = 0.025, names = FALSE),0)
+newinfectionresults_peryear_95PI<-data.frame( 
+                       year = integer(),
+                       scenarios = character(),
+                       newHIV_value = numeric(),
+                       newHIV_lower = numeric(),
+                       newHIV_upper = numeric(),
+                       diagnosis_value = numeric(),
+                       diagnosis_lower = numeric(),
+                       diagnosis_upper = numeric())
+
+for (ii in 2020:2022) {
+newinfectionresults_peryear_95PI<-rbind(newinfectionresults_peryear_95PI,data.frame(
+                                        year = ii,
+                                        scenarios = "Without COVID-19 impact and remain",
+                                        newHIV_value = round((newinfections_peryear %>% filter(scenarios =="Without COVID-19 impact and remain",year == ii))$Sum,0),
+                                        newHIV_lower = round(quantile((newinfections_peryear_sim %>% filter(scenarios == "Without COVID-19 impact and remain", year ==ii))$Sum, probs = 0.025, names = FALSE),0),
+                                        newHIV_upper = round(quantile((newinfections_peryear_sim %>% filter(scenarios == "Without COVID-19 impact and remain", year ==ii))$Sum, probs = 0.975, names = FALSE),0),
+                                        diagnosis_value = round((diagnosis_peryear %>% filter(scenarios =="Without COVID-19 impact and remain",year == ii))$Sum,0),
+                                        diagnosis_lower = round(quantile((diagnosis_peryear_sim %>% filter(scenarios == "Without COVID-19 impact and remain", year ==ii))$Sum, probs = 0.025, names = FALSE),0),
+                                        diagnosis_upper = round(quantile((diagnosis_peryear_sim %>% filter(scenarios == "Without COVID-19 impact and remain", year ==ii))$Sum, probs = 0.975, names = FALSE),0)))
+}
+
+for (ii in 2020:2022) {
+newinfectionresults_peryear_95PI<-rbind(newinfectionresults_peryear_95PI,data.frame(
+                                        year = ii,
+                                        scenarios = "With COVID-19 impact",
+                                        newHIV_value = round((newinfections_peryear %>% filter(scenarios =="With COVID-19 impact",year == ii))$Sum,0),
+                                        newHIV_lower = round(quantile((newinfections_peryear_sim %>% filter(scenarios == "With COVID-19 impact", year ==ii))$Sum, probs = 0.025, names = FALSE),0),
+                                        newHIV_upper = round(quantile((newinfections_peryear_sim %>% filter(scenarios == "With COVID-19 impact", year ==ii))$Sum, probs = 0.975, names = FALSE),0),
+                                        diagnosis_value = round((diagnosis_peryear %>% filter(scenarios =="With COVID-19 impact",year == ii))$Sum,0),
+                                        diagnosis_lower = round(quantile((diagnosis_peryear_sim %>% filter(scenarios == "With COVID-19 impact", year ==ii))$Sum, probs = 0.025, names = FALSE),0),
+                                        diagnosis_upper = round(quantile((diagnosis_peryear_sim %>% filter(scenarios == "With COVID-19 impact", year ==ii))$Sum, probs = 0.975, names = FALSE),0)))
+}
+
+for (ii in 2020:2022) {
+newinfectionresults_peryear_95PI<-rbind(newinfectionresults_peryear_95PI,data.frame(
+                                        year = ii,
+                                        scenarios = "Without COVID-19 impact and with prep promotion",
+                                        newHIV_value = round((newinfections_peryear %>% filter(scenarios =="Without COVID-19 impact and with prep promotion",year == ii))$Sum,0),
+                                        newHIV_lower = round(quantile((newinfections_peryear_sim %>% filter(scenarios == "Without COVID-19 impact and with prep promotion", year ==ii))$Sum, probs = 0.025, names = FALSE),0),
+                                        newHIV_upper = round(quantile((newinfections_peryear_sim %>% filter(scenarios == "Without COVID-19 impact and with prep promotion", year ==ii))$Sum, probs = 0.975, names = FALSE),0),
+                                        diagnosis_value = round((diagnosis_peryear %>% filter(scenarios =="Without COVID-19 impact and with prep promotion",year == ii))$Sum,0),
+                                        diagnosis_lower = round(quantile((diagnosis_peryear_sim %>% filter(scenarios == "Without COVID-19 impact and with prep promotion", year ==ii))$Sum, probs = 0.025, names = FALSE),0),
+                                        diagnosis_upper = round(quantile((diagnosis_peryear_sim %>% filter(scenarios == "Without COVID-19 impact and with prep promotion", year ==ii))$Sum, probs = 0.975, names = FALSE),0)))
+}
+
+adjustmentvalue_diagnosis_2022<-12/8
+newinfectionresults_peryear_95PI$diagnosis_value <- ifelse(newinfectionresults_peryear_95PI$year %in% c("2022"), newinfectionresults_peryear_95PI$diagnosis_value*adjustmentvalue_diagnosis_2022, newinfectionresults_peryear_95PI$diagnosis_value)
+
+newinfectionresults_peryear_95PI$diagnosis_lower <- ifelse(newinfectionresults_peryear_95PI$year %in% c("2022"), newinfectionresults_peryear_95PI$diagnosis_lower*adjustmentvalue_diagnosis_2022, newinfectionresults_peryear_95PI$diagnosis_lower)
+
+newinfectionresults_peryear_95PI$diagnosis_upper <- ifelse(newinfectionresults_peryear_95PI$year %in% c("2022"), newinfectionresults_peryear_95PI$diagnosis_upper*adjustmentvalue_diagnosis_2022, newinfectionresults_peryear_95PI$diagnosis_upper)
+
+newinfectionresults_peryear_95PI$newHIV_value <- ifelse(newinfectionresults_peryear_95PI$year %in% c("2022"), newinfectionresults_peryear_95PI$newHIV_value*adjustmentvalue_diagnosis_2022, newinfectionresults_peryear_95PI$newHIV_value)
+
+newinfectionresults_peryear_95PI$newHIV_lower <- ifelse(newinfectionresults_peryear_95PI$year %in% c("2022"), newinfectionresults_peryear_95PI$newHIV_lower*adjustmentvalue_diagnosis_2022, newinfectionresults_peryear_95PI$newHIV_lower)
+
+newinfectionresults_peryear_95PI$newHIV_upper <- ifelse(newinfectionresults_peryear_95PI$year %in% c("2022"), newinfectionresults_peryear_95PI$newHIV_upper*adjustmentvalue_diagnosis_2022, newinfectionresults_peryear_95PI$newHIV_upper)
+
 newinfectionresults_peryear_95PI
 ```
 
