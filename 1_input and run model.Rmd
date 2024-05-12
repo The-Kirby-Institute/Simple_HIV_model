@@ -118,7 +118,10 @@ infectionresults$scenarios<-factor(infectionresults$scenarios,levels =
 
 ###add a column of cumulated number of new infections
 #mutate(group_by(newinfectionresults,scenarios), csum=cumsum(newHIV))
-infectionresults<- infectionresults %>% group_by(scenarios) %>% mutate(csum_infection = cumsum(newHIV))
+infectionresults<- infectionresults %>% 
+  mutate(infection1 = ifelse(timestep==0,0,newHIV)) %>% group_by(scenarios) %>% mutate(csum_infection = cumsum(infection1))
+infectionresults<- infectionresults %>% 
+  mutate(diagnosis1 = ifelse(timestep==0,0,diagnosis))%>% group_by(scenarios) %>% mutate(csum_diagnosis = cumsum(diagnosis1))
 ###add a colum of the variable "year"###
 infectionresults$year<-c(2019,rep(2020,12),rep(2021,12),rep(2022,8),2019,rep(2020,12),rep(2021,12),rep(2022,8),2019,rep(2020,12),rep(2021,12),rep(2022,8))
 #newinfectionresults$year<-rep(c(rep("year0",3),rep("year1",12),rep("year2",12),rep("year3",6)),3)
@@ -192,8 +195,8 @@ totalinfectionresults$scenarios<-factor(totalinfectionresults$scenarios,levels =
 
 #Save output in some form Rda file and/or csv
 # If file not already created make sure it is not overwritten
-if (!file.exists(file.path(resultsFolder, "infectionresults0305.csv"))) {
-write.csv(infectionresults, file = file.path(resultsFolder, "infectionresults0305.csv"))
+if (!file.exists(file.path(resultsFolder, "infectionresults0501.csv"))) {
+write.csv(infectionresults, file = file.path(resultsFolder, "infectionresults0501.csv"))
 }
 if (!file.exists(file.path(resultsFolder, "totalinfection_results1213_2.csv"))) {
 write.csv(totalinfectionresults, file = file.path(resultsFolder, "totalinfection_results1213_2.csv"))
@@ -209,7 +212,7 @@ write.csv(newinfections_peryear, file = file.path(resultsFolder, "newinfections_
 numsims <- 1000 # number of sampled parameter sets to run
   # Generate and store a random integer for set.seed so we can rerun 
   # things exactly if we want to
-  currseed <- 839381# sample(1:10^6, 1)# 839381 all95:237965
+  currseed <- 113210 #sample(1:10^6, 1) #113210
   set.seed(currseed)
   
  paramsSets <- list()
@@ -376,8 +379,8 @@ parasets_lists_base[[ii]]$omega_p= c(1,paramsSets$prep_base[((ii-1)*times+2):((i
 parasets_lists_base[[ii]]$IM= rep(paramsSets$immigrants[((ii-1)*times+1)],times)
 parasets_lists_base[[ii]]$EM= rep(paramsSets$emigrants[((ii-1)*times+1)],times)
 parasets_lists_base[[ii]]$Death= rep(paramsSets$Deaths[((ii-1)*times+1)],times)
-parasets_lists_base[[ii]]$tau= c(paramsSets$proART[ii],paramsSets$tau[((ii-1)*times+2):((ii-1)*times+times)])
-parasets_lists_base[[ii]]$sigma= c(paramsSets$prosupp[ii],paramsSets$sigma[((ii-1)*times+2):((ii-1)*times+times)])
+parasets_lists_base[[ii]]$tau= rep(paramsSets$proART[ii],times)
+parasets_lists_base[[ii]]$sigma= rep(paramsSets$prosupp[ii],times)
 
 initial_state_values_sim_base<-list()
 initial_state_values_sim_base[[ii]]<-as.list(c(N=parasets_lists_base[[ii]]$N0,  
@@ -434,8 +437,8 @@ parasets_lists_scenario3[[ii]]$omega_p= c(1,paramsSets$prep_scenario3[((ii-1)*ti
 parasets_lists_scenario3[[ii]]$IM= rep(paramsSets$immigrants[((ii-1)*times+1)],times)
 parasets_lists_scenario3[[ii]]$EM= rep(paramsSets$emigrants[((ii-1)*times+1)],times)
 parasets_lists_scenario3[[ii]]$Death= rep(paramsSets$Deaths[((ii-1)*times+1)],times)
-parasets_lists_scenario3[[ii]]$tau= c(paramsSets$proART[ii],paramsSets$tau[((ii-1)*times+2):((ii-1)*times+times)])
-parasets_lists_scenario3[[ii]]$sigma= c(paramsSets$prosupp[ii],paramsSets$sigma[((ii-1)*times+2):((ii-1)*times+times)])
+parasets_lists_scenario3[[ii]]$tau= rep(paramsSets$proART[ii],times)
+parasets_lists_scenario3[[ii]]$sigma= rep(paramsSets$prosupp[ii],times)
 
 initial_state_values_sim_scenario3<-list()
 initial_state_values_sim_scenario3[[ii]]<-as.list(c(N=parasets_lists_scenario3[[ii]]$N0,  
@@ -479,7 +482,10 @@ newinfectionresults_sim<- newinfectionresults_sim %>% group_by(scenarios,numsim)
 #  summarise(Sum=sum(newHIV))
 
 ###for all dataset
-infectionresults_sim<- infectionresults_sim %>% group_by(scenarios,numsim) %>% mutate(csum_infection = cumsum(newHIV))
+infectionresults_sim<- infectionresults_sim %>% 
+  mutate(infection1 = ifelse(timestep==0,0,newHIV)) %>% group_by(scenarios,numsim) %>% mutate(csum_infection = cumsum(infection1))
+infectionresults_sim<- infectionresults_sim %>% 
+  mutate(diagnosis1 = ifelse(timestep==0,0,diagnosis)) %>% group_by(scenarios,numsim) %>% mutate(csum_diagnosis = cumsum(diagnosis1))
 
 ###add a colum of the variable "year" to represent###
 #newinfectionresults_sim$year<-rep(c(rep("year0",3),rep("year1",12),rep("year2",12),rep("year3",6)),2000)
@@ -616,24 +622,47 @@ avertedInfects_95PI$lower <- quantile((totalinfectionresults_sim %>%
   filter(timestep == 33))$avertednum, probs = 0.025, names = FALSE)
 
 totalinfectionresults_95PI<-list()
-totalinfectionresults_95PI$withoutcovid_value<-round((totalinfectionresults %>% filter(scenarios =="Without COVID-19 impact and remain",timestep == 33))$totalHIV,0)
-totalinfectionresults_95PI$withoutcovid_upper<-round(quantile((totalinfectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and remain", timestep == 33))$totalHIV, probs = 0.975, names = FALSE),0)
-totalinfectionresults_95PI$withoutcovid_lower<-round(quantile((totalinfectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and remain", timestep == 33))$totalHIV, probs = 0.025, names = FALSE),0)
+totalinfectionresults_95PI$withoutcovid_value<-round((totalinfectionresults %>% filter(scenarios =="Without COVID-19 impact and remain",timestep == 32))$totalHIV,0)
+totalinfectionresults_95PI$withoutcovid_upper<-round(quantile((totalinfectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and remain", timestep == 32))$totalHIV, probs = 0.975, names = FALSE),0)
+totalinfectionresults_95PI$withoutcovid_lower<-round(quantile((totalinfectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and remain", timestep == 32))$totalHIV, probs = 0.025, names = FALSE),0)
 
-totalinfectionresults_95PI$withcovid_value<-round((totalinfectionresults %>% filter(scenarios == "With COVID-19 impact",timestep == 33))$totalHIV,0)
-totalinfectionresults_95PI$withcovid_upper<-round(quantile((totalinfectionresults_sim %>% filter(scenarios == "With COVID-19 impact", timestep == 33))$totalHIV, probs = 0.975, names = FALSE),0)
-totalinfectionresults_95PI$withcovid_lower<-round(quantile((totalinfectionresults_sim %>% filter(scenarios == "With COVID-19 impact", timestep == 33))$totalHIV, probs = 0.025, names = FALSE),0)
+totalinfectionresults_95PI$withoutcovid_withprep_value<-round((totalinfectionresults %>% filter(scenarios =="Without COVID-19 impact and with prep promotion",timestep == 32))$totalHIV,0)
+totalinfectionresults_95PI$withoutcovid_withprep_upper<-round(quantile((totalinfectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and with prep promotion", timestep == 32))$totalHIV, probs = 0.975, names = FALSE),0)
+totalinfectionresults_95PI$withoutcovid_withprep_lower<-round(quantile((totalinfectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and with prep promotion", timestep == 32))$totalHIV, probs = 0.025, names = FALSE),0)
+
+totalinfectionresults_95PI$withcovid_value<-round((totalinfectionresults %>% filter(scenarios == "With COVID-19 impact",timestep == 32))$totalHIV,0)
+totalinfectionresults_95PI$withcovid_upper<-round(quantile((totalinfectionresults_sim %>% filter(scenarios == "With COVID-19 impact", timestep == 32))$totalHIV, probs = 0.975, names = FALSE),0)
+totalinfectionresults_95PI$withcovid_lower<-round(quantile((totalinfectionresults_sim %>% filter(scenarios == "With COVID-19 impact", timestep == 32))$totalHIV, probs = 0.025, names = FALSE),0)
 totalinfectionresults_95PI
 
 cumuinfectionresults_95PI<-list()
-cumuinfectionresults_95PI$withoutcovid_value<-round((newinfectionresults %>% filter(scenarios =="Without COVID-19 impact and remain",timestep == 32))$csum,0)
-cumuinfectionresults_95PI$withoutcovid_upper<-round(quantile((newinfectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and remain", timestep == 32))$csum, probs = 0.975, names = FALSE),0)
-cumuinfectionresults_95PI$withoutcovid_lower<-round(quantile((newinfectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and remain", timestep == 32))$csum, probs = 0.025, names = FALSE),0)
+cumuinfectionresults_95PI$withoutcovid_value<-round((infectionresults %>% filter(scenarios =="Without COVID-19 impact and remain",timestep == 32))$csum_infection,0)
+cumuinfectionresults_95PI$withoutcovid_upper<-round(quantile((infectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and remain", timestep == 32))$csum_infection, probs = 0.975, names = FALSE),0)
+cumuinfectionresults_95PI$withoutcovid_lower<-round(quantile((infectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and remain", timestep == 32))$csum_infection, probs = 0.025, names = FALSE),0)
 
-cumuinfectionresults_95PI$withcovid_value<-round((newinfectionresults %>% filter(scenarios == "With COVID-19 impact",timestep == 32))$csum,0)
-cumuinfectionresults_95PI$withcovid_upper<-round(quantile((newinfectionresults_sim %>% filter(scenarios == "With COVID-19 impact", timestep == 32))$csum, probs = 0.975, names = FALSE),0)
-cumuinfectionresults_95PI$withcovid_lower<-round(quantile((newinfectionresults_sim %>% filter(scenarios == "With COVID-19 impact", timestep == 32))$csum, probs = 0.025, names = FALSE),0)
+cumuinfectionresults_95PI$withoutcovid_withprep_value<-round((infectionresults %>% filter(scenarios =="Without COVID-19 impact and with prep promotion",timestep == 32))$csum_infection,0)
+cumuinfectionresults_95PI$withoutcovid_withprep_upper<-round(quantile((infectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and with prep promotion", timestep == 32))$csum_infection, probs = 0.975, names = FALSE),0)
+cumuinfectionresults_95PI$withoutcovid_withprep_lower<-round(quantile((infectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and with prep promotion", timestep == 32))$csum_infection, probs = 0.025, names = FALSE),0)
+
+cumuinfectionresults_95PI$withcovid_value<-round((infectionresults %>% filter(scenarios == "With COVID-19 impact",timestep == 32))$csum_infection,0)
+cumuinfectionresults_95PI$withcovid_upper<-round(quantile((infectionresults_sim %>% filter(scenarios == "With COVID-19 impact", timestep == 32))$csum_infection, probs = 0.975, names = FALSE),0)
+cumuinfectionresults_95PI$withcovid_lower<-round(quantile((infectionresults_sim %>% filter(scenarios == "With COVID-19 impact", timestep == 32))$csum_infection, probs = 0.025, names = FALSE),0)
 cumuinfectionresults_95PI
+
+
+cumudiagnosisresults_95PI<-list()
+cumudiagnosisresults_95PI$withoutcovid_value<-round((infectionresults %>% filter(scenarios =="Without COVID-19 impact and remain",timestep == 32))$csum_diagnosis,0)
+cumudiagnosisresults_95PI$withoutcovid_upper<-round(quantile((infectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and remain", timestep == 32))$csum_diagnosis, probs = 0.975, names = FALSE),0)
+cumudiagnosisresults_95PI$withoutcovid_lower<-round(quantile((infectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and remain", timestep == 32))$csum_diagnosis, probs = 0.025, names = FALSE),0)
+
+cumudiagnosisresults_95PI$withoutcovid_withprep_value<-round((infectionresults %>% filter(scenarios =="Without COVID-19 impact and with prep promotion",timestep == 32))$csum_diagnosis,0)
+cumudiagnosisresults_95PI$withoutcovid_withprep_upper<-round(quantile((infectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and with prep promotion", timestep == 32))$csum_diagnosis, probs = 0.975, names = FALSE),0)
+cumudiagnosisresults_95PI$withoutcovid_withprep_lower<-round(quantile((infectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and with prep promotion", timestep == 32))$csum_diagnosis, probs = 0.025, names = FALSE),0)
+
+cumudiagnosisresults_95PI$withcovid_value<-round((infectionresults %>% filter(scenarios == "With COVID-19 impact",timestep == 32))$csum_diagnosis,0)
+cumudiagnosisresults_95PI$withcovid_upper<-round(quantile((infectionresults_sim %>% filter(scenarios == "With COVID-19 impact", timestep == 32))$csum_diagnosis, probs = 0.975, names = FALSE),0)
+cumudiagnosisresults_95PI$withcovid_lower<-round(quantile((infectionresults_sim %>% filter(scenarios == "With COVID-19 impact", timestep == 32))$csum_diagnosis, probs = 0.025, names = FALSE),0)
+cumudiagnosisresults_95PI
 
 ###number of new infections and diagnoses each year with 95% percentile interval###
 
@@ -697,5 +726,19 @@ newinfectionresults_peryear_95PI$newHIV_lower <- ifelse(newinfectionresults_pery
 newinfectionresults_peryear_95PI$newHIV_upper <- ifelse(newinfectionresults_peryear_95PI$year %in% c("2022"), newinfectionresults_peryear_95PI$newHIV_upper*adjustmentvalue_diagnosis_2022, newinfectionresults_peryear_95PI$newHIV_upper)
 
 newinfectionresults_peryear_95PI
+quantile_interval_band_newHIV$newHIV<-infectionresults$newHIV
+#Save output in some form Rda file and/or csv
+# If file not already created make sure it is not overwritten
+if (!file.exists(file.path(resultsFolder, "infectionresults_sim_20240511.csv"))) {
+write.csv(infectionresults_sim, file = file.path(resultsFolder, "infectionresults_sim_20240511.csv"))
+}
+if (!file.exists(file.path(resultsFolder, "quantile_interval_band_newHIV_20240512.csv"))) {
+write.csv(quantile_interval_band_newHIV, file = file.path(resultsFolder, "quantile_interval_band_newHIV_20240512.csv"))
+}
+if (!file.exists(file.path(resultsFolder, "newinfectionresults_peryear_95PI_20240511.csv"))) {
+write.csv(newinfectionresults_peryear_95PI, file = file.path(resultsFolder, "newinfectionresults_peryear_95PI_20240511.csv"))
+}
+
+
 ```
 
