@@ -1,6 +1,6 @@
 # 1_input and run model.Rmd#
 
-This script is to input all the data and run the SIMPLE HIV model for a specified
+#This script is to input all the data and run the SIMPLE HIV model for a specified
 project.
 
 ```{r Initialise}
@@ -195,8 +195,8 @@ totalinfectionresults$scenarios<-factor(totalinfectionresults$scenarios,levels =
 
 #Save output in some form Rda file and/or csv
 # If file not already created make sure it is not overwritten
-if (!file.exists(file.path(resultsFolder, "infectionresults0501.csv"))) {
-write.csv(infectionresults, file = file.path(resultsFolder, "infectionresults0501.csv"))
+if (!file.exists(file.path(resultsFolder, "infectionresults0701.csv"))) {
+write.csv(infectionresults, file = file.path(resultsFolder, "infectionresults0701.csv"))
 }
 if (!file.exists(file.path(resultsFolder, "totalinfection_results1213_2.csv"))) {
 write.csv(totalinfectionresults, file = file.path(resultsFolder, "totalinfection_results1213_2.csv"))
@@ -729,14 +729,14 @@ newinfectionresults_peryear_95PI
 quantile_interval_band_newHIV$newHIV<-infectionresults$newHIV
 #Save output in some form Rda file and/or csv
 # If file not already created make sure it is not overwritten
-if (!file.exists(file.path(resultsFolder, "infectionresults_sim_20240511.csv"))) {
-write.csv(infectionresults_sim, file = file.path(resultsFolder, "infectionresults_sim_20240511.csv"))
+if (!file.exists(file.path(resultsFolder, "infectionresults_sim_20240701.csv"))) {
+write.csv(infectionresults_sim, file = file.path(resultsFolder, "infectionresults_sim_20240701.csv"))
 }
-if (!file.exists(file.path(resultsFolder, "quantile_interval_band_newHIV_20240512.csv"))) {
-write.csv(quantile_interval_band_newHIV, file = file.path(resultsFolder, "quantile_interval_band_newHIV_20240512.csv"))
+if (!file.exists(file.path(resultsFolder, "quantile_interval_band_newHIV_20240701.csv"))) {
+write.csv(quantile_interval_band_newHIV, file = file.path(resultsFolder, "quantile_interval_band_newHIV_20240701.csv"))
 }
-if (!file.exists(file.path(resultsFolder, "newinfectionresults_peryear_95PI_20240511.csv"))) {
-write.csv(newinfectionresults_peryear_95PI, file = file.path(resultsFolder, "newinfectionresults_peryear_95PI_20240511.csv"))
+if (!file.exists(file.path(resultsFolder, "newinfectionresults_peryear_95PI_20240701.csv"))) {
+write.csv(newinfectionresults_peryear_95PI, file = file.path(resultsFolder, "newinfectionresults_peryear_95PI_20240701.csv"))
 }
 
 

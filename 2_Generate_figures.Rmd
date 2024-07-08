@@ -62,16 +62,16 @@ newinfectionfig_sim_band<- ggplot()+
   scale_colour_manual(name = "", 
     breaks = c("With COVID-19 impact","Without COVID-19 impact and remain", "Without COVID-19 impact and with prep promotion"), 
     values = c("#FC8D62","#66C2A5",  "#8DA0CB"),
-    labels = c("With COVID-19","No COVID-19","No COVID-19 plus\nPrEP promotion")) +
+    labels = c("COVID-19","No COVID-19","No COVID-19 plus PrEP")) +
   scale_fill_manual(name = "", 
     breaks = c("With COVID-19 impact","Without COVID-19 impact and remain", "Without COVID-19 impact and with prep promotion"), 
     values = c("#FC8D62","#66C2A5",  "#8DA0CB"),
-    labels = c("With COVID-19","No COVID-19","No COVID-19 plus\nPrEP promotion"))+
+    labels = c("COVID-19","No COVID-19","No COVID-19 plus PrEP"))+
   scale_x_continuous(breaks = c(1,7,13,19,25,31), 
                      labels = c("Jan-2020","July-2020","Jan-2021","July-2021","Jan-2022","July-2022"))+ 
   xlab(paste0("Time (", projectSpecs$stepsize, ")")) + 
   ylab("Number of new HIV infections")+
-  ylim(0,signif(max(quantile_interval_band_newHIV$upperbound),1))
+  ylim(0,70)
 newinfectionfig_sim_band<- newinfectionfig_sim_band+ theme_classic()
 newinfectionfig_sim_band
 
@@ -84,21 +84,28 @@ newinfectionfig_sim_band_twoscenarios<- ggplot()+
               fill = scenarios, colour = scenarios
               ),alpha = 0.2,
               stat = "identity") +
-  geom_line(size = 1.2) +
+  geom_line(linewidth = 1.2) +
   scale_colour_manual(name = "", 
-    breaks = c("Without COVID-19 impact and remain", "With COVID-19 impact"), 
-    values = c("#66C2A5", "#FC8D62"),
-    labels = c("Without COVID-19 pandemic", "With COVID-19 pandemic")) +
+    breaks = c("With COVID-19 impact","Without COVID-19 impact and remain"), 
+    values = c("#FC8D62","#66C2A5"),
+    labels = c("With COVID-19","No COVID-19")) +
   scale_fill_manual(name = "", 
-    breaks = c("Without COVID-19 impact and remain", "With COVID-19 impact"), 
-    values = c("#66C2A5", "#FC8D62"),
-    labels = c("Without COVID-19 pandemic", "With COVID-19 pandemic"))+
+    breaks = c("With COVID-19 impact","Without COVID-19 impact and remain"), 
+    values = c("#FC8D62","#66C2A5"),
+    labels = c("With COVID-19","No COVID-19"))+
   scale_x_continuous(breaks = c(1,7,13,19,25,31), 
                      labels = c("Jan-2020","July-2020","Jan-2021","July-2021","Jan-2022","July-2022"))+ 
   xlab(paste0("Time (", projectSpecs$stepsize, ")")) + 
   ylab("Number of new HIV infections")+
-  ylim(0,signif(max(quantile_interval_band_newHIV$upperbound),1))
-newinfectionfig_sim_band_twoscenarios<- newinfectionfig_sim_band_twoscenarios+ theme_classic()
+  ylim(0,70)+ 
+  theme_classic()+
+  theme(legend.position = "top")+
+  theme(axis.text = element_text(size = 16),
+        axis.title = element_text(size = 16),
+        legend.text = element_text(size = 16),
+        legend.title = element_text(size = 16),
+        legend.key.size = unit(1, "cm"))
+  #theme(text = element_text(size=rel(3.5)))
 newinfectionfig_sim_band_twoscenarios
 
 display.brewer.all()
@@ -116,23 +123,23 @@ cumulatedinfectionfig<-ggplot(data = newinfectionresults,
 
 cumulatedinfectionfig
 
-###save figure###
+###save figure###25，8.5 for poster
 SaveFigure <- function(folder, filename, figure, 
-    format = ".png", width = 20, 
-    height = 10, units = "cm", ...) {
+    format = ".png", width = 25, 
+    height = 8.5, units = "cm", dpi=600,...) {
     ggsave(file.path(folder, paste(filename, format, sep = "")), 
-      plot = figure, width = width, height = height, units = units, ...)
+      plot = figure, width = width, height = height, units = units,dpi=dpi, ...)
 }
 
 # If figure not already created make sure it is not overwritten
 if (!file.exists(file.path(figFolder, "cumulated_HIV_infection20240117.png"))) {
     SaveFigure(figFolder,"cumulated_HIV_infection20240117",cumulatedinfectionfig)
 }
-if (!file.exists(file.path(figFolder, "newinfectionfig_sim_band_twoscenarios.png"))) {
-    SaveFigure(figFolder,"newinfectionfig_sim_band_twoscenarios",newinfectionfig_sim_band_twoscenarios)
+if (!file.exists(file.path(figFolder, "newinfectionfig_sim_band_twoscenarios20240708.png"))) {
+    SaveFigure(figFolder,"newinfectionfig_sim_band_twoscenarios20240708",newinfectionfig_sim_band_twoscenarios)
 }
-if (!file.exists(file.path(figFolder, "newinfectionfig_sim_band_20240511.png"))) {
-    SaveFigure(figFolder,"newinfectionfig_sim_band_20240511.png",newinfectionfig_sim_band)
+if (!file.exists(file.path(figFolder, "newinfectionfig_sim_band_20240703.png"))) {
+    SaveFigure(figFolder,"newinfectionfig_sim_band_20240703.png",newinfectionfig_sim_band)
 }
 ```
 
@@ -241,17 +248,23 @@ diagnosis_peryear_fig<- ggplot(subset(newinfectionresults_peryear_95PI,scenarios
        geom_bar(aes(x = c(2019.8,2020.8,2021.8), y = diagnosis_value, fill = "Diagnoses",colour = "Diagnoses"), stat="identity",  width=0.4, alpha = 0.5)+ 
        geom_errorbar(aes(x = c(2019.8,2020.8,2021.8), ymin=diagnosis_lower,ymax=diagnosis_upper,width=0.1), colour = "#b5182b")+
        geom_bar(aes(x = c(2020.2,2021.2,2022.2), y = HIV_Diagnoses_annualdata$diagnosis, fill = "Notifications from\nSurveillance report", colour = "Notifications from\nSurveillance report"), stat="identity", width=0.4, alpha = 0.5)+
-       scale_colour_manual(name="",breaks = c("Diagnoses", "Notifications from\nSurveillance report"),labels = c("Diagnoses", "Notifications from\nSurveillance report"), values = c('#b5182b80','#f9cb4580'))+
-       scale_fill_manual(name="",breaks = c("Diagnoses", "Notifications from\nSurveillance report"),labels = c("Diagnoses", "Notifications from\nSurveillance report"), values = c('#b5182b80','#f9cb4580'))+
+       scale_colour_manual(name="",breaks = c("Diagnoses", "Notifications from\nSurveillance report"),labels = c("Diagnoses from\nour model", "Diagnoses from\nSurveillance report"), values = c('#b5182b80','#f9cb4580'))+
+       scale_fill_manual(name="",breaks = c("Diagnoses", "Notifications from\nSurveillance report"),labels = c("Diagnoses from\nour model", "Diagnoses from\nSurveillance report"), values = c('#b5182b80','#f9cb4580'))+
        ylim(0,signif(max(newinfectionresults_peryear_95PI$diagnosis_upper),1)) +
        #scale_y_continuous(expand = c(0, 200), limits = c(0, NA))+
        scale_x_continuous(breaks = c(2020,2021,2022), 
                      labels = c("2020","2021","2022"))+ 
        xlab("Year") + ylab("Number") +
-       theme_classic()+
-       theme(plot.margin = margin(30, 0, 0, 30))+
-       labs(tag = "  \n A") +
-       theme(plot.tag.position = c(-0.02, 0.7))
+       theme_classic() +
+  theme(legend.position = "top")+
+  theme(axis.text = element_text(size = 16),
+        axis.title = element_text(size = 16),
+        legend.text = element_text(size = 16),
+        legend.title = element_text(size = 16),
+        legend.key.size = unit(1, "cm"))#+
+       #theme(plot.margin = margin(30, 0, 0, 30))+
+       #labs(tag = "  \n A") +
+       #theme(plot.tag.position = c(-0.02, 0.7))
              
 diagnosis_peryear_fig
 
@@ -275,9 +288,11 @@ newinfections_peryear_fig
 
 combined_figure<-plot_grid(diagnosis_peryear_fig, newinfections_peryear_fig, ncol=1, align="v")
 
-if (!file.exists(file.path(figFolder, "newinfections_diagnosis_peryear_fig20240511.png"))) {
-    SaveFigure(figFolder,"newinfections_diagnosis_peryear_fig20240511",combined_figure)
+if (!file.exists(file.path(figFolder, "newinfections_diagnosis_peryear_fig20240523.png"))) {
+    SaveFigure(figFolder,"newinfections_diagnosis_peryear_fig20240523",combined_figure)
 }
-
+if (!file.exists(file.path(figFolder, "diagnosis_peryear_fig20240708.png"))) {
+    SaveFigure(figFolder,"diagnosis_peryear_fig20240708",diagnosis_peryear_fig)
+}
 ```
 
