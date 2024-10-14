@@ -1,9 +1,8 @@
 ####This script is to Generate parameters
 ##no need to change the content in this script
-Parameters<-function(defaultpara,fixeddata, timeseries,projectspecs){
-with(as.list(c(defaultpara,fixeddata, timeseries,projectspecs)), {
+Parameters<-function(fixeddata, timeseries,projectspecs){
+with(as.list(c(fixeddata, timeseries,projectspecs)), {
 # Setting up parameters
-defaultpara$value<-as.numeric(defaultpara$value)
 fixeddata$value<-as.numeric(fixeddata$value)
 timeseries$timestep<-as.numeric(timeseries$timestep)
 timeseries$acts<-as.numeric(timeseries$acts)
@@ -23,9 +22,9 @@ I0=fixeddata$value[fixeddata$Para == "newinf"], ##new infection
 d0=fixeddata$value[fixeddata$Para == "prodiag"], ##proportion  diagnosed
 tau0=fixeddata$value[fixeddata$Para == "proART"], ##proportion on ART
 sigma0=fixeddata$value[fixeddata$Para == "prosupp"] ,##proportion suppressed
-phi=defaultpara$value[defaultpara$Para == "effisupp"],  ##the reduction in transmission due to suppression 0.95?
+phi=fixeddata$value[fixeddata$Para == "effisupp"],  ##the reduction in transmission due to suppression 0.95?
 omega0= fixeddata$value[fixeddata$Para == "PrEPcov"], ##PrEP coverage (FIG1 Hammoud/##FIG21 HIV Strategy 2016 ?C 2020)
-epsilon_PrEP=defaultpara$value[defaultpara$Para == "effiPrEP"])  ###scott(0.86) efficacy of PrEP
+epsilon_PrEP=fixeddata$value[fixeddata$Para == "effiPrEP"])  ###scott(0.86) efficacy of PrEP
 #different functions for beta0
 # beta option
 # beta option 1: the number of infections caused by PLHIV
@@ -42,10 +41,10 @@ I0=fixeddata$value[fixeddata$Para == "newinf"], ##new infection
 d0=fixeddata$value[fixeddata$Para == "prodiag"], ##proportion  diagnosed
 tau0=fixeddata$value[fixeddata$Para == "proART"], ##proportion on ART
 sigma0=fixeddata$value[fixeddata$Para == "prosupp"] ,##proportion suppressed
-phi=defaultpara$value[defaultpara$Para == "effisupp"],  ##the reduction in transmission due to suppression 0.95?
+phi=fixeddata$value[fixeddata$Para == "effisupp"],  ##the reduction in transmission due to suppression 0.95?
 omega0= fixeddata$value[fixeddata$Para == "PrEPcov"], ##PrEP coverage (FIG1 Hammoud/##FIG21 HIV Strategy 2016 ?C 2020)
-epsilon_PrEP=defaultpara$value[defaultpara$Para == "effiPrEP"],  ###scott(0.86) efficacy of PrEP
-epsilon_condom=defaultpara$value[defaultpara$Para == "efficon"],  ###efficacy condoms, scott
+epsilon_PrEP=fixeddata$value[fixeddata$Para == "effiPrEP"],  ###scott(0.86) efficacy of PrEP
+epsilon_condom=fixeddata$value[fixeddata$Para == "efficon"],  ###efficacy condoms, scott
 chi_0=fixeddata$value[fixeddata$Para == "conduse"], ##proportion of condom use FIG21 HIV Strategy 2016 ?C 2020 Quarter 4 & Annual 2020 Data Report
 alpha0=fixeddata$value[fixeddata$Para == "sexact"],  ####proportion of sexual acts (baseline) Table1 Hammoud, total number of partners mean
 T= fixeddata$value[fixeddata$Para == "testpro"])##proportion of testing, FIG22a HIV Strategy 2016 ?C 2020 Quarter 4 & Annual 2020 Data Report
