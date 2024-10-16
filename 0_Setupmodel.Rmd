@@ -7,7 +7,6 @@ The example used is project investigating the impact of COVID-19 (COVID-19impact
 # Only requires base R
 
 # Core folders
-dataFolder <- file.path(getwd(), "data")
 projects <- file.path(getwd(), "projects")
 
 ```
@@ -23,19 +22,14 @@ name <- "COVID-19impact"
 if (!file.exists(file.path(projects, name, "project_specs.csv"))) {
     # Create project folders 
     dir.create(file.path(projects, name))
+    dir.create(file.path(projects, name,"data"))
     dir.create(file.path(projects, name,"output"))
     dir.create(file.path(projects, name, "figures"))
     
-    # Create blank input files by copying the template files
-    #project_specs <- data.frame(spec = c("name", "statyear", "steps", "stepsize", "betaoption"), value = rep(0,5))
     
-    #write csv in the template file
-    #write.csv(project_specs, file = file.path(dataFolder, "templates", "project_specs.csv"))
-    
-    file.copy(file.path(dataFolder, "templates", "project_specs.csv"), file.path(projects, name))
-    file.copy(file.path(dataFolder, "templates", "hiv_default_para.csv"), file.path(projects, name))
-    file.copy(file.path(dataFolder, "templates", "hiv_fixed_data.csv"), file.path(projects, name))
-    file.copy(file.path(dataFolder, "templates", "hiv_time_series_data.csv"), file.path(projects, name))
+    file.copy(file.path(getwd(), "templates", "project_specs.csv"), file.path(projects, name,"data"))
+    file.copy(file.path(getwd(), "templates", "hiv_fixed_data.csv"), file.path(projects, name,"data"))
+    file.copy(file.path(getwd(), "templates", "hiv_time_series_data.csv"), file.path(projects, name,"data"))
 }
 
 ```
