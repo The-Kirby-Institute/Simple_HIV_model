@@ -32,8 +32,7 @@ You need the following software & associated packages to run this model:
 │           ├── hiv_time_series_data.csv
 │           ├── hiv_fixed_data.csv
 │           ├── prep_estimate_predicted_use.csv
-│           ├── condom_estimate_predicted_use.csv
-│           └── scenario3_IM_EM_DEATH.csv
+│           └── condom_estimate_predicted_use.csv
 │       ├── figures      # model outputs: figures
 │       ├── output       # model outputs: data   
 │       └── GenerateScenarios.R 
@@ -41,10 +40,11 @@ You need the following software & associated packages to run this model:
 │   ├── BetaOption.R     # function for beta selection in the model
 │   ├── Parameters.R     # function for data wrangling 
 │   └── SimpleHiv.R      # function for model simulation
-├── templates/
+├── templates/           # These template files are pre-filled with example data from the `COVID-19impact` project.
 │   ├── project_specs.csv
 │   ├── hiv_time_series_data.csv
-│   └── hiv_fixed_data.csv
+│   ├── hiv_fixed_data.csv
+│   └── GenerateScenarios.R 
 ├── 0_Setupmodel.Rmd
 ├── 1_input and run model.Rmd
 └── 2_Generate_figures.Rmd
@@ -62,12 +62,14 @@ All model inputs stored as either `.csv` and outputs stored as `.csv` files.
 
 ## `0_Setupmodel.Rmd`:This script is designed to create a new project for the Simple HIV model.
 The example used is project investigating the impact of COVID-19 (COVID-19impact).
-The script creates a project directory in the "projects" directory and relevant sub-directories and copies csv files in "templates" directory to data folder (sub-folder).
+The script creates a project directory in the "projects" directory and relevant sub-directories and copies template files in "templates" directory to data folder (sub-folder).
+These template files are pre-filled with example data from the `COVID-19impact` project to demonstrate how the model can be configured and run. You can modify these templates to fit your own project requirements.
 
-3 csv files included in this sub-folder. 
+3 csv files and 1 .R file included in this sub-folder. 
       *    `project_specs.csv`: For specifying project name, starting year, number of time-step, step size, and beta option.
       *    `hiv_time_series_data.csv`: For specifying time series parameters.
       *    `hiv_fixed_data.csv`: For specifying fixed parameters.
+      *    `GenerateScenarios.R`: For specifying scenarios.
 
 
 ## `1_input and run model.Rmd`: This script is designed to input project-specific data and run the SIMPLE HIV model. The script allows users to configure the model for different scenarios and generate relevant outputs such as infection results, cumulative infections, diagnoses, and more. The example used here is for the "COVID-19impact" project.
@@ -107,12 +109,13 @@ The final output results are saved in the project’s `output` folder as .csv fi
 
 #### 8. Output Data:
 The script generates several output datasets, which are saved in CSV format in the project’s `output` folder. Key outputs include:
-- **Infection Results**: The dataset contains comprehensive results of the project for each time-step and scenario, including the number of new HIV infections, the total number of PLHIV, the proportion of diagnosed, the number of new diagnoses, cumulative numbers of new HIV infections, cumulative numbers of new diagnoses, and cumulative numbers of new HIV infections and new diagnoses for each year.
-- **Infection Results with 1000 simulations**: The dataset contains results across 1000 simulations for each time-step and scenario. It includes the number of new HIV infections, the total number of PLHIV, the proportion of diagnosed, the number of new diagnoses, cumulative numbers of new HIV infections, cumulative numbers of new diagnoses, and cumulative numbers of new HIV infections and new diagnoses for each year.
-- **Monthly Results with 95% PIs**: The dataset provides monthly results for new HIV infections along with 95% PIs to illustrate the uncertainty in the estimates.
-- **Summarised Results with 95% PIs**: The dataset summarizes key outcomes for each scenario, including the cumulative numbers of new HIV infections and diagnoses, as well as the total number of PLHIV at the end of the simulation period, all presented with 95% PIs.
-- **Yearly Cumulative Results with 95% PIs**: The dataset shows yearly cumulative numbers of new HIV infections and diagnoses, with 95% PIs provided for each scenario at the end of the simulation period.
+- 'infectionresults_date.csv' **Infection Results**: The dataset contains comprehensive results of the project for each time-step and scenario, including the number of new HIV infections, the total number of PLHIV, the proportion of diagnosed, the number of new diagnoses, cumulative numbers of new HIV infections, cumulative numbers of new diagnoses, and cumulative numbers of new HIV infections and new diagnoses for each year.
+- 'infectionresults_sim_date.csv' **Infection Results with 1000 simulations**: The dataset contains results across 1000 simulations for each time-step and scenario. It includes the number of new HIV infections, the total number of PLHIV, the proportion of diagnosed, the number of new diagnoses, cumulative numbers of new HIV infections, cumulative numbers of new diagnoses, and cumulative numbers of new HIV infections and new diagnoses for each year.
+- 'monthly_results_95PI_date.csv' **Monthly Results with 95% PIs**: The dataset provides monthly results for new HIV infections along with 95% PIs to illustrate the uncertainty in the estimates.
+- 'summarized_results_95PI_date.csv' **Summarised Results with 95% PIs**: The dataset summarizes key outcomes for each scenario, including the cumulative numbers of new HIV infections and diagnoses, as well as the total number of PLHIV at the end of the simulation period, all presented with 95% PIs.
+- 'yearly_cumulative_results_date.csv' **Yearly Cumulative Results with 95% PIs**: The dataset shows yearly cumulative numbers of new HIV infections and diagnoses, with 95% PIs provided for each scenario at the end of the simulation period.
 
+**"date" above is the date we saved the .csv file.**
 
 ## `2_Generate_figures.Rmd`: This script is to generate figures for Simple HIV model.
 
@@ -131,7 +134,7 @@ The script generates several figures based on the simulation results:
 ##### a. **New HIV Infections Over Time**:
 - This section generates a figure showing the number of new HIV infections over time for different scenarios (e.g., with and without COVID-19 impact, and with PrEP promotion).
 - **Figure Characteristics**:
-  - Smooth lines with shaded confidence intervals (bands) represent 95% percentile intervals (PIs).
+  - Smooth lines with shaded intervals (bands) represent 95% percentile intervals (PIs).
   - Scenarios are color-coded for clarity.
 - The figure is saved as `newinfectionfig_sim_band_date.png`. "date" here is the date we saved the figure.
 
@@ -140,7 +143,7 @@ The script generates several figures based on the simulation results:
 - **Figure Characteristics**:
   - Bar plots show the modeled diagnoses and actual surveillance data for 2020, 2021, and 2022.
   - Error bars represent the 95% PIs for the model predictions.
-- The figure is saved as `diagnosis_peryear_figdate.png`. "date" here is the date we saved the figure.
+- The figure is saved as `diagnosis_peryear_fig_date.png`. "date" here is the date we saved the figure.
 
 #### 3. Saving Figures:
 The script includes a `SaveFigure` function that ensures figures are saved in the designated folder with the correct file name. If the file already exists, it will not be overwritten.
