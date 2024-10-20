@@ -60,7 +60,8 @@ The project code is written in `R` version 4.3.2 as R or R markdown scripts with
 All model inputs stored as either `.csv` and outputs stored as `.csv` files.
 
 
-## `0_Setupmodel.Rmd`:This script is designed to create a new project for the Simple HIV model.
+## `0_Setupmodel.Rmd`:
+This script is designed to create a new project for the Simple HIV model.
 The example used is project investigating the impact of COVID-19 (COVID-19impact).
 The script creates a project directory in the "projects" directory and relevant sub-directories and copies template files in "templates" directory to data folder (sub-folder).
 These template files are pre-filled with example data from the `COVID-19impact` project to demonstrate how the model can be configured and run. You can modify these templates to fit your own project requirements.
@@ -72,7 +73,8 @@ These template files are pre-filled with example data from the `COVID-19impact` 
       *    `GenerateScenarios.R`: For specifying scenarios.
 
 
-## `1_input and run model.Rmd`: This script is designed to input project-specific data and run the SIMPLE HIV model. The script allows users to configure the model for different scenarios and generate relevant outputs such as infection results, cumulative infections, diagnoses, and more. The example used here is for the "COVID-19impact" project.
+## `1_input and run model.Rmd`: 
+This script is designed to input project-specific data and run the SIMPLE HIV model. The script allows users to configure the model for different scenarios and generate relevant outputs such as infection results, cumulative infections, diagnoses, and more. The example used here is for the "COVID-19impact" project.
 
 ### How to Use:
 
