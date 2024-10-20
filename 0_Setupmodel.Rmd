@@ -26,10 +26,11 @@ if (!file.exists(file.path(projects, name, "project_specs.csv"))) {
     dir.create(file.path(projects, name,"output"))
     dir.create(file.path(projects, name, "figures"))
     
-    
+    # Copy all needed files
     file.copy(file.path(getwd(), "templates", "project_specs.csv"), file.path(projects, name,"data"))
     file.copy(file.path(getwd(), "templates", "hiv_fixed_data.csv"), file.path(projects, name,"data"))
     file.copy(file.path(getwd(), "templates", "hiv_time_series_data.csv"), file.path(projects, name,"data"))
+    file.copy(file.path(getwd(), "templates", "GenerateScenarios.R"), file.path(projects, name,"data"))
 }
 
 ```

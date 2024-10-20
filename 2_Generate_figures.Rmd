@@ -121,8 +121,8 @@ diagnosis_peryear_fig<- ggplot(subset(newinfectionresults_peryear_95PI,scenarios
              
 diagnosis_peryear_fig
 
-if (!file.exists(file.path(figFolder, "diagnosis_peryear_fig20240708.png"))) {
-    SaveFigure(figFolder,"diagnosis_peryear_fig20240708",diagnosis_peryear_fig)
+if (!file.exists(file.path(figFolder, "diagnosis_peryear_fig_20240708.png"))) {
+    SaveFigure(figFolder,"diagnosis_peryear_fig_20240708",diagnosis_peryear_fig)
 }
 ```
 

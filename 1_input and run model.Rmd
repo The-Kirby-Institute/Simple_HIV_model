@@ -143,8 +143,8 @@ group_by(scenarios,year) %>%
 
 #Save output in some form Rda file and/or csv
 # If file not already created make sure it is not overwritten
-if (!file.exists(file.path(resultsFolder, "infectionresults0701.csv"))) {
-write.csv(infectionresults, file = file.path(resultsFolder, "infectionresults0701.csv"))
+if (!file.exists(file.path(resultsFolder, "infectionresults_1020.csv"))) {
+write.csv(infectionresults, file = file.path(resultsFolder, "infectionresults_1020.csv"))
 }
 
 ```
@@ -549,17 +549,17 @@ quantile_interval_band_newHIV$newHIV<-infectionresults$newHIV
 
 #Save output in some form Rda file and/or csv
 # If file not already created make sure it is not overwritten
-if (!file.exists(file.path(resultsFolder, "infectionresults_sim_20240701.csv"))) {
-write.csv(infectionresults_sim, file = file.path(resultsFolder, "infectionresults_sim_20240701.csv"))
+if (!file.exists(file.path(resultsFolder, "infectionresults_sim_20241020.csv"))) {
+write.csv(infectionresults_sim, file = file.path(resultsFolder, "infectionresults_sim_20241020.csv"))
 }
-if (!file.exists(file.path(resultsFolder, "infectionresults_95CI_20241014.csv"))) {
-write.csv(infectionresults_95CI, file = file.path(resultsFolder, "infectionresults_95CI_20241014.csv"))
+if (!file.exists(file.path(resultsFolder, "summarized_results_95PI_20241020.csv"))) {
+write.csv(infectionresults_95CI, file = file.path(resultsFolder, "summarized_results_95PI_20241020.csv"))
 }
-if (!file.exists(file.path(resultsFolder, "quantile_interval_band_newHIV_20240701.csv"))) {
-write.csv(quantile_interval_band_newHIV, file = file.path(resultsFolder, "quantile_interval_band_newHIV_20240701.csv"))
+if (!file.exists(file.path(resultsFolder, "monthly_results_95PI_20241020.csv"))) {
+write.csv(quantile_interval_band_newHIV, file = file.path(resultsFolder, "monthly_results_95PI_20241020.csv"))
 }
-if (!file.exists(file.path(resultsFolder, "newinfectionresults_peryear_95PI_20240701.csv"))) {
-write.csv(newinfectionresults_peryear_95PI, file = file.path(resultsFolder, "newinfectionresults_peryear_95PI_20240701.csv"))
+if (!file.exists(file.path(resultsFolder, "yearly_cumulative_results_95PI_20241020.csv"))) {
+write.csv(newinfectionresults_peryear_95PI, file = file.path(resultsFolder, "yearly_cumulative_results_95PI_20241020.csv"))
 }
 
 
