@@ -118,9 +118,6 @@ The script generates several output datasets, which are saved in CSV format in t
 
 This script is designed to generate figures based on the results from the Simple HIV model. It creates visualizations that help illustrate key outputs such as the number of new HIV infections and annual diagnoses. The script leverages the ggplot2 package and related libraries to create these figures.
 
-### Purpose:
-This script is designed to generate figures based on the results from the Simple HIV model. It creates visualizations to illustrate key outputs such as the number of new HIV infections and annual diagnoses. The script uses the `ggplot2` package and related libraries to produce these figures.
-
 ### How to Use:
 
 #### 1. Prerequisites:
@@ -147,7 +144,6 @@ The script generates several figures based on the simulation results:
 
 #### 3. Saving Figures:
 The script includes a `SaveFigure` function that ensures figures are saved in the designated folder with the correct file name. If the file already exists, it will not be overwritten.
-
 
 
 # Disclaimer
