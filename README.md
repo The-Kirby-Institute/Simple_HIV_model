@@ -80,11 +80,10 @@ This script is designed to input project-specific data and run the SIMPLE HIV mo
 
 #### 1. Prerequisites:
 Before running this script, ensure the following step is complete:
-- You have successfully run the script `0_Setupmodel.Rmd` to create the "projects" directory and relevant sub-directories and copy template files to the "data" folder.
+- You have successfully run the script `0_Setupmodel.Rmd` to 1). create the "projects" directory and relevant sub-directories and 2). copy .csv files in the "templates" folder to the "data" folder and `GenerateScenarios.R` to the "projects" directory.
 
 #### 2. Initialization:
 - Set the working directory and ensure all required libraries (`dplyr_1.1.4`) and functions (`BetaOption.R`, `Parameters.R`, and `SimpleHiv.R`) are loaded. This step also clears the workspace to prevent any conflicts.
-
 
 #### 3. User Inputs:
 - Modify the `selectedproject` variable to select the project for which you want to run the model.
