@@ -63,7 +63,7 @@ All model inputs stored as either `.csv` and outputs stored as `.csv` files.
 ## `0_Setupmodel.Rmd`:
 This script is designed to create a new project for the Simple HIV model.
 The example used is project investigating the impact of COVID-19 (COVID-19impact).
-The script creates a project directory in the "projects" directory and relevant sub-directories and copies template files in "templates" directory to data folder (sub-folder).
+The script creates a project directory in the "projects" directory and relevant sub-directories and copies template files in "templates" directory to the data folder (sub-folder).
 These template files are pre-filled with example data from the `COVID-19impact` project to demonstrate how the model can be configured and run. You can modify these templates to fit your own project requirements.
 
 3 csv files and 1 .R file included in this sub-folder. 
@@ -78,38 +78,42 @@ This script is designed to input project-specific data and run the SIMPLE HIV mo
 
 ### How to Use:
 
-#### 1. Initialization:
-- Set the working directory and ensure all required libraries and functions are loaded. This step also clears the workspace to prevent any conflicts.
+#### 1. Prerequisites:
+Before running this script, ensure the following step are complete:
+- You have successfully run the script `0_Setupmodel.Rmd` to create the "projects" directory and relevant sub-directories and copy template files to the data folder.
+
+#### 2. Initialization:
+- Set the working directory and ensure all required libraries (`dplyr_1.1.4`) and functions (`BetaOption.R`, `Parameters.R`, and `SimpleHiv.R`) are loaded. This step also clears the workspace to prevent any conflicts.
 - The working directory should contain project folders, data files, and R code files required for the simulation.
 
-#### 2. User Inputs:
+#### 3. User Inputs:
 - Modify the `selectedproject` variable to select the project for which you want to run the model.
 - Ensure that the project folder, data folder, and output folder paths are correctly set.
 
-#### 3. Project Data:
+#### 4. Project Data:
 The script will load the following .csv files from the project's `data` sub-folder:
 - `project_specs.csv`: Defines project specifications such as start year, number of time-steps, and beta options.
 - `hiv_time_series_data.csv`: Contains time-series data for parameters like condom use, testing rates, and more.
 - `hiv_fixed_data.csv`: Holds fixed parameter values for the model.
 - `prep_estimate_predicted_use.csv` and `condom_estimate_predicted_use.csv`: Scenario-specific data for PrEP use and condom use.
 
-#### 4. Scenarios:
+#### 5. Scenarios:
 The following scenarios are generated and simulated:
 - **With COVID-19 impact**: It was shown as "COVID-19 scenario" in the paper, where all changes in monthly parameter values occur and reflect the impact of COVID-19.
 - **Without COVID-19 impact**: It was shown as "no COVID-19 scenario" in the paper, a counterfactual scenario where the input parameters remained at their value in December 2019 and corresponded to pre-COVID-19 values.
 - **Without COVID-19 impact and with PrEP promotion**: It was shown as "no COVID-19 plus PrEP scenario" in the paper, an alternative counterfactual no COVID-19 scenario where PrEP scale-up and the corresponding decrease in condom use continued during 2020-2020 following the pre-2019 trends, with the other parameters remaining at their December 2019 value. 
 
-#### 5. Running the Model:
+#### 6. Running the Model:
 - The script sets up multiple scenarios based on user-defined parameter sets. Each scenario represents a different possible outcome, for example, with or without the impact of COVID-19 or with PrEP promotion.
 - For each scenario, the model simulates the transmission of HIV over the specified time period and outputs results such as the number of new infections, the total number of people living with HIV (PLHIV), and the number of new diagnoses.
 
-#### 6. Simulation with Uncertainty:
+#### 7. Simulation with Uncertainty:
 The script allows for 1000 simulations using sampled parameter sets to assess uncertainty. Percentile Intervals (PIs) are calculated based on these simulations.
 
-#### 7. Saving Results:
+#### 8. Saving Results:
 The final output results are saved in the project’s `output` folder as .csv files. The script checks if a file already exists before saving to prevent overwriting previous results.
 
-#### 8. Output Data:
+#### 9. Output Data:
 The script generates several output datasets, which are saved in CSV format in the project’s `output` folder. Key outputs include:
 - 'infectionresults_date.csv' **Infection Results**: The dataset contains comprehensive results of the project for each time-step and scenario, including the number of new HIV infections, the total number of PLHIV, the proportion of diagnosed, the number of new diagnoses, cumulative numbers of new HIV infections, cumulative numbers of new diagnoses, and cumulative numbers of new HIV infections and new diagnoses for each year.
 - 'infectionresults_sim_date.csv' **Infection Results with 1000 simulations**: The dataset contains results across 1000 simulations for each time-step and scenario. It includes the number of new HIV infections, the total number of PLHIV, the proportion of diagnosed, the number of new diagnoses, cumulative numbers of new HIV infections, cumulative numbers of new diagnoses, and cumulative numbers of new HIV infections and new diagnoses for each year.
@@ -118,6 +122,7 @@ The script generates several output datasets, which are saved in CSV format in t
 - 'yearly_cumulative_results_date.csv' **Yearly Cumulative Results with 95% PIs**: The dataset shows yearly cumulative numbers of new HIV infections and diagnoses, with 95% PIs provided for each scenario at the end of the simulation period.
 
 **"date" above is the date we saved the .csv file.**
+
 
 ## `2_Generate_figures.Rmd`: This script is to generate figures for Simple HIV model.
 
@@ -128,7 +133,7 @@ This script is designed to generate figures based on the results from the Simple
 #### 1. Prerequisites:
 Before running this script, ensure the following steps are complete:
 - You have successfully run the script `1_input and run model.Rmd` to generate the necessary results.
-- All required data files are available in the correct folders, including `infectionresults`, `Monthly Results with 95% PIs`, and `Yearly Cumulative Results with 95% PIs`.
+- All required data files are available in the correct folders, including `infectionresults_date.csv`, `monthly_results_95PI_date.csv`, and `yearly_cumulative_results_date.csv`.
 
 #### 2. Generating Figures:
 The script generates several figures based on the simulation results:
@@ -148,8 +153,7 @@ The script generates several figures based on the simulation results:
 - The figure is saved as `diagnosis_peryear_fig_date.png`. "date" here is the date we saved the figure.
 
 #### 3. Saving Figures:
-The script includes a `SaveFigure` function that ensures figures are saved in the designated folder with the correct file name. If the file already exists, it will not be overwritten.
-
+The script includes a `SaveFigure` function that ensures figures are saved in the `figures` folder with the correct file name. If the file already exists, it will not be overwritten.
 
 # Disclaimer
 The model has been made publicly available for transparency and replication purposes and in the hope it will be useful. We take no responsibility for results generated with the model and their interpretation but are happy to assist with its use and application."
