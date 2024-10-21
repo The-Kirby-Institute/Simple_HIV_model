@@ -53,7 +53,7 @@ You need the following software & associated packages to run this model:
 
 # Set up and run the Simple HIV model
 
-All the project files are stored in the main directory and 4 main sub-directories. This main README file describes the overall project. 
+All the project files are stored in the main directory and 3 main sub-directories. This main README file describes the overall project. 
 
 The project code is written in `R` version 4.3.2 as R or R markdown scripts with `Rstudio` version 2024.04.2+764. 
 
@@ -63,7 +63,7 @@ All model inputs stored as either `.csv` and outputs stored as `.csv` files.
 ## `0_Setupmodel.Rmd`:
 This script is designed to create a new project for the Simple HIV model.
 The example used is project investigating the impact of COVID-19 (COVID-19impact).
-The script creates a project directory in the "projects" directory and relevant sub-directories and copies template files in "templates" directory to the data folder (sub-folder).
+The script creates a project directory in the "projects" directory and relevant sub-directories and copies template files in "templates" directory to the "data" folder (sub-folder).
 These template files are pre-filled with example data from the `COVID-19impact` project to demonstrate how the model can be configured and run. You can modify these templates to fit your own project requirements.
 
 3 csv files and 1 .R file included in this sub-folder. 
@@ -79,12 +79,12 @@ This script is designed to input project-specific data and run the SIMPLE HIV mo
 ### How to Use:
 
 #### 1. Prerequisites:
-Before running this script, ensure the following step are complete:
-- You have successfully run the script `0_Setupmodel.Rmd` to create the "projects" directory and relevant sub-directories and copy template files to the data folder.
+Before running this script, ensure the following step is complete:
+- You have successfully run the script `0_Setupmodel.Rmd` to create the "projects" directory and relevant sub-directories and copy template files to the "data" folder.
 
 #### 2. Initialization:
 - Set the working directory and ensure all required libraries (`dplyr_1.1.4`) and functions (`BetaOption.R`, `Parameters.R`, and `SimpleHiv.R`) are loaded. This step also clears the workspace to prevent any conflicts.
-- The working directory should contain project folders, data files, and R code files required for the simulation.
+
 
 #### 3. User Inputs:
 - Modify the `selectedproject` variable to select the project for which you want to run the model.
@@ -111,10 +111,10 @@ The following scenarios are generated and simulated:
 The script allows for 1000 simulations using sampled parameter sets to assess uncertainty. Percentile Intervals (PIs) are calculated based on these simulations.
 
 #### 8. Saving Results:
-The final output results are saved in the project’s `output` folder as .csv files. The script checks if a file already exists before saving to prevent overwriting previous results.
+The final output results are saved in the project’s "output" folder as .csv files. The script checks if a file already exists before saving to prevent overwriting previous results.
 
 #### 9. Output Data:
-The script generates several output datasets, which are saved in CSV format in the project’s `output` folder. Key outputs include:
+The script generates several output datasets, which are saved in CSV format in the project’s "output" folder. Key outputs include:
 - 'infectionresults_date.csv' **Infection Results**: The dataset contains comprehensive results of the project for each time-step and scenario, including the number of new HIV infections, the total number of PLHIV, the proportion of diagnosed, the number of new diagnoses, cumulative numbers of new HIV infections, cumulative numbers of new diagnoses, and cumulative numbers of new HIV infections and new diagnoses for each year.
 - 'infectionresults_sim_date.csv' **Infection Results with 1000 simulations**: The dataset contains results across 1000 simulations for each time-step and scenario. It includes the number of new HIV infections, the total number of PLHIV, the proportion of diagnosed, the number of new diagnoses, cumulative numbers of new HIV infections, cumulative numbers of new diagnoses, and cumulative numbers of new HIV infections and new diagnoses for each year.
 - 'monthly_results_95PI_date.csv' **Monthly Results with 95% PIs**: The dataset provides monthly results for new HIV infections along with 95% PIs to illustrate the uncertainty in the estimates.
@@ -133,7 +133,7 @@ This script is designed to generate figures based on the results from the Simple
 #### 1. Prerequisites:
 Before running this script, ensure the following steps are complete:
 - You have successfully run the script `1_input and run model.Rmd` to generate the necessary results.
-- All required data files are available in the correct folders, including `infectionresults_date.csv`, `monthly_results_95PI_date.csv`, and `yearly_cumulative_results_date.csv`.
+- All required data files are available in the "output" folder, including `infectionresults_date.csv`, `monthly_results_95PI_date.csv`, and `yearly_cumulative_results_date.csv`.
 
 #### 2. Generating Figures:
 The script generates several figures based on the simulation results:
@@ -153,7 +153,7 @@ The script generates several figures based on the simulation results:
 - The figure is saved as `diagnosis_peryear_fig_date.png`. "date" here is the date we saved the figure.
 
 #### 3. Saving Figures:
-The script includes a `SaveFigure` function that ensures figures are saved in the `figures` folder with the correct file name. If the file already exists, it will not be overwritten.
+The script includes a `SaveFigure` function that ensures figures are saved in the "figures" folder with the correct file name. If the file already exists, it will not be overwritten.
 
 # Disclaimer
 The model has been made publicly available for transparency and replication purposes and in the hope it will be useful. We take no responsibility for results generated with the model and their interpretation but are happy to assist with its use and application."
