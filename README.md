@@ -91,7 +91,7 @@ Before running this script, ensure the following step is complete:
 - Ensure that the project folder, data folder, and output folder paths are correctly set.
 
 #### 4. Project Data:
-The script will load the following .csv files from the project's `data` sub-folder:
+The script will load the following .csv files from the project's "data" sub-folder:
 - `project_specs.csv`: Defines project specifications such as start year, number of time-steps, and beta options.
 - `hiv_time_series_data.csv`: Contains time-series data for parameters like condom use, testing rates, and more.
 - `hiv_fixed_data.csv`: Holds fixed parameter values for the model.
