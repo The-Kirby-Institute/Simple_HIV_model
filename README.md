@@ -4,12 +4,6 @@ This project contains the code for a model of HIV transmission that can be used 
 
 *DOI*: 
 
-Model developer, coder and maintainer of this repository: [Rongxing Weng](https://github.com/RongxingW)
-
-ORCiD ID: [0000-0003-1792-2186](https://orcid.org/0000-0003-1792-2186) 
-
-Affiliation: The Kirby Institute, UNSW Sydney, NSW, Australia
-
 
 # Aims
 - The aim of the Simple HIV model is to estimate the number of new HIV infections and diagoses, as well as the total number of people livig with HIV in each timestep. The model can estimate the impacts that changes in time-sensitive factors can have on the HIV epidemic, particularly in response to large-scale public health policies or interventions.
