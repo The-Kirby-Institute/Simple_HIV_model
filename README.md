@@ -2,7 +2,7 @@
 
 This project contains the code for a model of HIV transmission that can be used to investigate the effect of dynamic changes in sexual partners, condom use, HIV testing, PrEP use, and migration on HIV transmission while also capturing the key stages of the HIV cascade. 
 
-*DOI*
+*DOI*: 
 
 Model developer, coder and maintainer of this repository: [Rongxing Weng](https://github.com/RongxingW)
 
@@ -21,10 +21,10 @@ Kelly, Sherrie L, and David P Wilson. “HIV Cascade Monitoring and Simple Model
 Scott, Nick, Mark Stoové, Sherrie L. Kelly, David P. Wilson, and Margaret E. Hellard. “Achieving 90-90-90 HIV Targets Will Not Be Enough to Achieve the HIV Incidence Reduction Target in Australia.” Clinical Infectious Diseases 66, no. 7 (April 1, 2018): 1019–23. https://doi.org/10.1093/cid/cix939.
 
 Gray, Richard T., Jo Watson, Aaron J. Cogle, Don E. Smith, Jennifer F. Hoy, Lisa A. Bastian, Robert Finlayson, et al. “Funding Antiretroviral Treatment for HIV-Positive Temporary Residents in Australia Prevents Transmission and Is Inexpensive.” Sexual Health, 2017. https://doi.org/10.1071/SH16237.
-- https://github.com/leftygray/ART_For_Temporary_Residents
+Codes available at: https://github.com/leftygray/ART_For_Temporary_Residents
 
 Gray, Richard T. “Impact of Increased Antiretroviral Therapy Use during the Treatment as Prevention Era in Australia.” Sexual Health 20, no. 3 (July 3, 2023): 202–10. https://doi.org/10.1071/SH23088.
-- https://github.com/The-Kirby-Institute/Impact_TasP_Australia
+Codes available at: https://github.com/The-Kirby-Institute/Impact_TasP_Australia
 
 
 # Maintainers and developers
