@@ -6,9 +6,9 @@ This project contains the code for a model of HIV transmission that can be used 
 
 
 # Aims
-- The aim of the Simple HIV model is to estimate the number of new HIV infections and diagoses, as well as the total number of people livig with HIV in each timestep. The model can estimate the impacts that changes in time-sensitive factors can have on the HIV epidemic, particularly in response to large-scale public health policies or interventions.
+- The aim of the Simple HIV model is to estimate the number of new HIV infections and diagnoses, as well as the total number of people living with HIV in each timestep. The model can estimate the impacts that changes in time-sensitive factors can have on the HIV epidemic, particularly in response to large-scale public health policies or interventions.
 
-- Builds on work done previously and is realted to the models in the following papers:
+- Builds on work done previously and is related to the models in the following papers:
 
 Kelly, Sherrie L, and David P Wilson. “HIV Cascade Monitoring and Simple Modeling Reveal Potential for Reductions in HIV Incidence.” JAIDS Journal of Acquired Immune Deficiency Syndromes 69, no. 3 (2015): 257–63.
 
@@ -67,24 +67,23 @@ The model code is primarily contained in three Rmarkdown scripts `0_Setupmodel.R
 Individual applications are stored in the `projects/` folder. The `code/` folder contains the functions and scripts used by the three main Rmarkdown scripts.
 The `templates/` folder provides template input .csv files that need to be filled out for a specific project for the model to run and `GenerateScenarios.R` function that needs to be customized for each specific project. 
 These template files are pre-filled with example data from the `COVID-19impact` project.
-Code, documents and other materials for each individual project using the Simple HIV Model are stored in specific folders within the `projects/` folder. 
+Code, documents, and other materials for each individual project using the Simple HIV Model are stored in specific folders within the `projects/` folder. 
 Each project has its own `README.Rmd` file and data for scenarios. For example, `prep_estimate_predicted_use.csv` and `condom_estimate_predicted_use.csv` are used to generate results for "no COVID-19 plus PrEP scenario".
 
 
 # Using the model
 - Clone or download the code from this repository into a convenient location on your computer.
 - Software & associated packages
-You need the following software & associated packages to run this model:
 
-* R, a free statistical program to run and analyze the model results using the provided scripts.
-* (Optional) RStudio, a useful user interface for the R program.
-* R packages associated with the Simple HIV model: 
+You need the following software & associated packages to run this model:
+1. R, a free statistical program to run and analyze the model results using the provided scripts. (Optional) RStudio, a useful user interface for the R program.
+2. R packages associated with the Simple HIV model: 
 
     `dplyr_1.1.4`, `ggplot2_3.4.4`, `gridExtra_2.3`, `RColorBrewer_1.1.3`, `stringr_1.5.1`, `tidyverse_2.0.0`,
  
     `cowplot_1.1.3` 
     
-- Documentation provided in X.docx
+- Documentation provided in `Project_Scripts_Guide.docx`
 This file provides detailed instructions on how to use every script for the overall project. 
 
 
@@ -93,7 +92,5 @@ The following publications are associated with this project and used code in thi
 
 
 # Disclaimer
-The model has been made publicly available for transparency and replication purposes and in the hope it will be useful. We take no responsibility for results generated with the model and their interpretation but are happy to assist with its use and application."
-
-
+The model has been made publicly available for transparency and replication purposes and in the hope it will be useful. We take no responsibility for results generated with the model and their interpretation but are happy to assist with its use and application.
 
