@@ -58,8 +58,8 @@ The **COVID-19impact** project uses `GenerateScenarios.R` to define scenarios. Y
 ## Contact Information
 For inquiries or further details, contact:
 
-- **Rongxing Weng** - [GitHub](https://github.com/RongxingW) | Email: rweng@kirby.unsw.edu.au
-- **Richard Gray** - [GitHub](https://github.com/leftygray) | Email: rgray@kirby.unsw.edu.au
+- **[Rongxing Weng](https://github.com/RongxingW)** | Email: rweng@kirby.unsw.edu.au
+- **[Richard Gray](https://github.com/leftygray)** | Email: rgray@kirby.unsw.edu.au
 
 ## Disclaimer
 The model has been made publicly available for transparency and replication purposes and in the hope it will be useful. We take no responsibility for results generated with the model and their interpretation but are happy to assist with its use and application.
