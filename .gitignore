@@ -10,8 +10,25 @@ material/*
 data/*
 figures/*
 output/*
-projects/*
 individual/*
+projects/*
+!projects/COVID-19impact
+projects/COVID-19impact/*
+!projects/COVID-19impact/data
+projects/COVID-19impact/data/*
+!projects/COVID-19impact/data/project_specs.csv
+!projects/COVID-19impact/data/hiv_time_series_data.csv
+!projects/COVID-19impact/data/hiv_fixed_data.csv
+!projects/COVID-19impact/data/prep_estimate_predicted_use.csv
+!projects/COVID-19impact/data/condom_estimate_predicted_use.csv
+!projects/COVID-19impact/figures
+projects/COVID-19impact/figures/*
+!projects/COVID-19impact/output
+projects/COVID-19impact/output/*
+!projects/COVID-19impact/GenerateScenarios.R
+!projects/COVID-19impact/README.Rmd
+
+
 
 # Individual files
 #act\ google\ movement.xlsx
