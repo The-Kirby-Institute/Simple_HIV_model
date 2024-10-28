@@ -1,0 +1,26 @@
+﻿Para,Parameter,value,lower,upper,distribution (maybe??),Notes
+plhiv,plhiv,20700,19665,21735,uniform,2019 estimate for PLHIV from cascade estimates 2020 Annual Surveillance Report
+prodiag,proportion diagnosed,0.9167,0.870865,0.962535,uniform,2019 estimate from cascade; = 19475/21353
+proART,proportion on ART,0.933,0.909675,0.956325,uniform,2019 estimate from cascade; ACCESS NSW overall data
+prosupp,proportion suppressed,0.97,0.957875,0.982125,uniform,2019 estimate from cascade; AHOD MSM 2019 1086/1115 = 0.974; ACCESS = 0.94 for NSW MSM
+PrEPcov,PrEP coverage,0.365,0.34675,0.38325,uniform,proportioned end of 2019 (or prior to COVID-19); 2020 GCPS value.
+testpro,testing proportion,0.03595063,0.034153099,0.037748162,uniform,per month; annual testing proportion converted to a monthly proportion. Equals 1-(1-0.768)^(1/12) = 0.1146. Based on Sydney GCPS 2020. 
+diagnoses,diagnoses,63.5,60.325,66.675,uniform,per month; 2020 expected  number based on on 2015-2019 trend excluding previously diagnosed overseas/12
+migdiag,migrant diagnoses,18.8,17.86,19.74,uniform,per month; 2020 expected number basedon 2015-2019 trend previously diagnosed overseas/12
+promigundiag,proportion migrants undiagnosed,0.186,0.1767,0.1953,uniform,2019 estimate for MSM born overseas from cascade
+newinf,new infections,42,39.9,44.1,uniform,per month; 2019 estimate from ECDC model/12
+numsus,number of susceptible people,14500,13775,15225,uniform,Assumption
+conduse,condom use (baseline),0.7310459,0.694493605,0.767598195,uniform,Can be changed as percentage
+sexact,sexual acts (baseline),1,0.95,1.05,uniform,Can be changed as counts
+effisupp,efficay suppression,0.96,0.936,0.984,uniform,Estimated value based on blow et al XXXX; Assumed unifrom range. 
+effiPrEP,efficacy PrEP,0.86,0.817,0.903,uniform,Assumption 0.95
+efficon,efficacy condoms,0.7,0.63,0.77,uniform,assumed to be the same as for consistent condom use
+acts_range,,1,0.95,1.05,uniform,
+condoms_range,,1,0.95,1.05,uniform,
+testing_range,,1,0.95,1.05,uniform,
+prep_range,,1,0.95,1.05,uniform,
+immigrants_range,,1,0.95,1.05,uniform,
+emigrants_range,,1,0.95,1.05,uniform,
+Deaths_range,,1,0.95,1.05,uniform,
+tau_range,,1,0.975,1.025,uniform,
+sigma_range,,1,0.9875,1.0125,uniform,
