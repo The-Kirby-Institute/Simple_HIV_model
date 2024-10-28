@@ -23,8 +23,10 @@ projects/COVID-19impact/data/*
 !projects/COVID-19impact/data/condom_estimate_predicted_use.csv
 !projects/COVID-19impact/figures
 projects/COVID-19impact/figures/*
+!projects/COVID-19impact/figures/.gitkeep
 !projects/COVID-19impact/output
 projects/COVID-19impact/output/*
+!projects/COVID-19impact/output/.gitkeep
 !projects/COVID-19impact/GenerateScenarios.R
 !projects/COVID-19impact/README.Rmd
 
