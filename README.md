@@ -60,6 +60,7 @@ The structure of the overall project is shown below.
 ├── 0_Setupmodel.Rmd
 ├── 1_input and run model.Rmd
 ├── 2_Generate_figures.Rmd
+├── Project_Scripts_Guide.docx
 ├── LICENSE
 └── README.md
 
