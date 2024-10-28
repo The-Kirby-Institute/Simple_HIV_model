@@ -46,7 +46,7 @@ The structure of the overall project is shown below.
 │           └── condom_estimate_predicted_use.csv
 │       ├── figures      # model outputs: figures
 │       ├── output       # model outputs: data   
-│       ├── README.Rmd
+│       ├── README.md
 │       └── GenerateScenarios.R 
 ├── code/
 │   ├── BetaOption.R     # function for beta selection in the model
@@ -59,7 +59,9 @@ The structure of the overall project is shown below.
 │   └── GenerateScenarios.R 
 ├── 0_Setupmodel.Rmd
 ├── 1_input and run model.Rmd
-└── 2_Generate_figures.Rmd
+├── 2_Generate_figures.Rmd
+├── LICENSE
+└── README.md
 
 ```
 
