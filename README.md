@@ -2,7 +2,7 @@
 
 This project contains the code for a simple model of HIV transmission that can be used to investigate the effect of dynamic changes in sexual partners, condom use, HIV testing, PrEP use, and migration on HIV transmission while also capturing the key stages of the HIV cascade.
 
-*DOI*:[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14213773.svg)](https://doi.org/10.5281/zenodo.14213773)
+*DOI*: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14213773.svg)](https://doi.org/10.5281/zenodo.14213773)
 
 This mode builds on previously developed models described in the following papers:
 
