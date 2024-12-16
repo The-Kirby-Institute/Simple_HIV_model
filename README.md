@@ -2,7 +2,7 @@
 
 This project contains the code for a simple model of HIV transmission that can be used to investigate the effect of dynamic changes in sexual partners, condom use, HIV testing, PrEP use, and migration on HIV transmission while also capturing the key stages of the HIV cascade.
 
-*DOI*: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14213773.svg)](https://doi.org/10.5281/zenodo.14213773)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14213773.svg)](https://doi.org/10.5281/zenodo.14213773)
 
 This mode builds on previously developed models described in the following papers:
 
@@ -83,7 +83,7 @@ Documentation is provided in `Project_Scripts_Guide.docx. `This file provides de
 
 The following publication is associated with this project and used code in this repository to generate the results and figures.
 
-* R. Weng, J. A. Kwon, M. Hammoud, N. Scott, S. McGregor, R. T. Gray. Evaluating the impact of COVID-19 on the HIV epidemic among men who have sex with men in Australia**: A modelling study.
+* R. Weng; J. A. Kwon; M. Hammoud; B. Clifton; N. Scott; S. McGregor; R. T. Gray, 2024, Evaluating the impact of COVID-19 on the HIV epidemic among men who have sex with men in Australia: A modelling study (Preprint), [https://doi.org/10.1101/2024.12.15.24318054](https://doi.org/10.1101/2024.12.15.24318054)
 
 ## Disclaimer
 
