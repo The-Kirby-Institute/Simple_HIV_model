@@ -11,9 +11,11 @@ library(RColorBrewer)
 library(stringr)
 library(tidyverse)
 library(cowplot)
+library(scales)
+library(grid)
 
 ###generate figure for number of new infections### 
-##Simulation results with band##
+####Simulation results with band####
 quantile_interval_band_newHIV$newHIV<-infectionresults$newHIV
 newinfectionfig_sim_band<- ggplot()+
   
@@ -40,7 +42,101 @@ newinfectionfig_sim_band<- ggplot()+
 newinfectionfig_sim_band<- newinfectionfig_sim_band+ theme_classic()
 newinfectionfig_sim_band
 
-##two scenarios for previous poster##
+####black and white figure####
+# Attach the newHIV values to the data frame
+quantile_interval_band_newHIV$newHIV <- infectionresults$newHIV
+
+black_newinfectionfig_sim_band <- ggplot() +
+  #---------------------------------------------------------------------------
+  # RIBBON: includes fill, border color, and linetype (now with show.legend=TRUE)
+  #---------------------------------------------------------------------------
+  geom_ribbon(
+    data = quantile_interval_band_newHIV,
+    aes(x = timestep, 
+        ymin = lowerbound, 
+        ymax = upperbound,
+        group = scenarios, 
+        fill = scenarios,    # fill for the ribbon
+        color = scenarios,   # border color of the ribbon
+        linetype = scenarios # border linetype of the ribbon
+    ),
+    alpha = 0.3
+  ) +
+  #---------------------------------------------------------------------------
+  # MAIN LINES: forced black color but linetype depends on scenario
+  #---------------------------------------------------------------------------
+  geom_line(
+    data = quantile_interval_band_newHIV,
+    aes(x = timestep, y = newHIV,
+        group = scenarios,
+        linetype = scenarios
+    ),
+    size = 1.2,
+    color = "black"
+  ) +
+  #---------------------------------------------------------------------------
+  # MANUAL SCALES: 
+  #   1) Same name ("Scenario") for fill, color, linetype
+  #   2) Identical breaks & labels
+  #---------------------------------------------------------------------------
+  scale_fill_manual(
+    name   = "Scenario",
+    breaks = c("With COVID-19 impact",
+               "Without COVID-19 impact and remain", 
+               "Without COVID-19 impact and with prep promotion"),
+    values = c("With COVID-19 impact"              = "grey90",
+               "Without COVID-19 impact and remain" = "grey70",
+               "Without COVID-19 impact and with prep promotion" = "grey50"),
+    labels = c("COVID-19", "No COVID-19", "No COVID-19 plus PrEP")
+  ) +
+  scale_color_manual(
+    name   = "Scenario",
+    breaks = c("With COVID-19 impact",
+               "Without COVID-19 impact and remain", 
+               "Without COVID-19 impact and with prep promotion"),
+    values = c("With COVID-19 impact"              = "grey80",
+               "Without COVID-19 impact and remain" = "grey60",
+               "Without COVID-19 impact and with prep promotion" = "grey40"),
+    labels = c("COVID-19", "No COVID-19", "No COVID-19 plus PrEP")
+  ) +
+  scale_linetype_manual(
+    name   = "Scenario",
+    breaks = c("With COVID-19 impact",
+               "Without COVID-19 impact and remain", 
+               "Without COVID-19 impact and with prep promotion"),
+    values = c("With COVID-19 impact"              = "solid",
+               "Without COVID-19 impact and remain" = "dotdash",
+               "Without COVID-19 impact and with prep promotion" = "dotted"),
+    labels = c("COVID-19", "No COVID-19", "No COVID-19 plus PrEP")
+  ) +
+  #---------------------------------------------------------------------------
+  # AXES & THEME
+  #---------------------------------------------------------------------------
+  scale_x_continuous(
+    breaks = c(1, 7, 13, 19, 25, 31), 
+    labels = c("Jan-2020", "July-2020", "Jan-2021", 
+               "July-2021", "Jan-2022", "July-2022")
+  ) +
+  xlab(paste0("Time (", projectSpecs$stepsize, ")")) + 
+  ylab("Number of new HIV infections") +
+  ylim(0, 70) +
+  theme_classic() +
+  # Increase the legend key size and text size
+  theme(
+    legend.key.size = unit(2.1, "lines"),
+    legend.text     = element_text(size = 10)
+  ) +
+  guides(
+    fill      = guide_legend(order = 1),
+    color     = "none",
+    linetype  = guide_legend(order = 1)
+  )
+
+# Display the plot
+black_newinfectionfig_sim_band
+
+
+####two scenarios for previous poster####
 newinfectionfig_sim_band_twoscenarios<- ggplot()+
   
   geom_smooth(data = subset(quantile_interval_band_newHIV,scenarios %in% c("Without COVID-19 impact and remain","With COVID-19 impact")), 
@@ -77,7 +173,7 @@ display.brewer.all()
 brewer.pal(n = 8, name = 'Set2')
 
 
-###save figure###
+####save figure####
 SaveFigure <- function(folder, filename, figure, 
     format = ".png", width = 20, 
     height = 10, units = "cm", dpi=600,...) {
@@ -88,6 +184,9 @@ SaveFigure <- function(folder, filename, figure,
 # If figure not already created make sure it is not overwritten
 if (!file.exists(file.path(figFolder, "newinfectionfig_sim_band_20240703.png"))) {
     SaveFigure(figFolder,"newinfectionfig_sim_band_20240703.png",newinfectionfig_sim_band)
+}
+if (!file.exists(file.path(figFolder, "black_newinfectionfig_sim_band_2025020501.png"))) {
+    SaveFigure(figFolder,"black_newinfectionfig_sim_band_2025020501.png",black_newinfectionfig_sim_band)
 }
 
 ```
@@ -121,8 +220,58 @@ diagnosis_peryear_fig<- ggplot(subset(newinfectionresults_peryear_95PI,scenarios
              
 diagnosis_peryear_fig
 
+
+black_diagnosis_peryear_fig <- ggplot(subset(newinfectionresults_peryear_95PI, scenarios %in% c("With COVID-19 impact"))) +
+  # Bar for Diagnoses (our model)
+  geom_bar(aes(x = c(2019.8, 2020.8, 2021.8), 
+               y = diagnosis_value, 
+               fill = "Diagnoses", 
+               colour = "Diagnoses"), 
+           stat = "identity", width = 0.4, alpha = 0.5) + 
+  # Error bars for Diagnoses (our model)
+  geom_errorbar(aes(x = c(2019.8, 2020.8, 2021.8), 
+                    ymin = diagnosis_lower, 
+                    ymax = diagnosis_upper, 
+                    width = 0.1), 
+                colour = "grey20") +
+  # Bar for Notifications from Surveillance Report
+  geom_bar(aes(x = c(2020.2, 2021.2, 2022.2), 
+               y = HIV_Diagnoses_annualdata$diagnosis, 
+               fill = "Notifications from\nSurveillance report", 
+               colour = "Notifications from\nSurveillance report"), 
+           stat = "identity", width = 0.4, alpha = 0.5) +
+  # Define the border colors (darker grays)
+  scale_colour_manual(name = "",
+                      breaks = c("Diagnoses", "Notifications from\nSurveillance report"),
+                      labels = c("Diagnoses from\nour model", "Diagnoses from\nSurveillance report"),
+                      values = c("Diagnoses" = "grey20",
+                                 "Notifications from\nSurveillance report" = "grey40")) +
+  # Define the fill colors (lighter grays)
+  scale_fill_manual(name = "",
+                    breaks = c("Diagnoses", "Notifications from\nSurveillance report"),
+                    labels = c("Diagnoses from\nour model", "Diagnoses from\nSurveillance report"),
+                    values = c("Diagnoses" = "grey90",
+                               "Notifications from\nSurveillance report" = "grey70")) +
+  # Set the y-axis to start from 0 and adjust expansion to avoid extra space at the bottom
+  scale_y_continuous(
+    limits = c(0, signif(max(newinfectionresults_peryear_95PI$diagnosis_upper), 1)),
+    expand = expansion(mult = c(0, 0.05))
+  ) +
+  # Customize the x-axis
+  scale_x_continuous(breaks = c(2020, 2021, 2022), 
+                     labels = c("2020", "2021", "2022")) + 
+  xlab("Year") + 
+  ylab("Number") +
+  theme_classic()
+
+# Display the plot
+black_diagnosis_peryear_fig
+
 if (!file.exists(file.path(figFolder, "diagnosis_peryear_fig_20240708.png"))) {
     SaveFigure(figFolder,"diagnosis_peryear_fig_20240708",diagnosis_peryear_fig)
+}
+if (!file.exists(file.path(figFolder, "black_diagnosis_peryear_fig_20250204.png"))) {
+    SaveFigure(figFolder,"black_diagnosis_peryear_fig_20250204",black_diagnosis_peryear_fig)
 }
 ```
 
