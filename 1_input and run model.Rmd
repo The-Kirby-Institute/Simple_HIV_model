@@ -230,34 +230,35 @@ infectionresults_sim<-data.frame(
                        percentage_diagnosis = numeric(),
                        diagnosis = numeric())
 
+parasets_lists_COVID      <- vector("list", numsims)
+output_sim_COVID          <- vector("list", numsims)
+initial_state_values_sim_COVID <- vector("list", numsims)
+
 
  for (ii in 1:numsims) {
-output_sim_COVID <-list()
-parasets_lists_COVID <- list(c(1:numsims))
 parasets_lists_COVID[[ii]]<- c(N0= paramsSets$plhiv[ii], 
                I0=paramsSets$newinf[ii], 
                d0=paramsSets$prodiag[ii], 
-               tau0=paramsSets$proART[ii], 
-               sigma0=paramsSets$prosupp[ii] ,
+               tau0=paramsSets$tau[((ii-1)*times+1)], 
+               sigma0=paramsSets$sigma[((ii-1)*times+1)],
                phi=paramsSets$effisupp[ii],  
-               omega0= paramsSets$PrEPcov[ii], 
+               omega0= paramsSets$prep[((ii-1)*times+1)]*projectParams$omega0, 
                epsilon_PrEP=paramsSets$effiPrEP[ii],  
                epsilon_condom=paramsSets$efficon[ii],   
-               chi_0=paramsSets$conduse[ii], 
-               alpha0=paramsSets$sexact[ii],  
-               T= paramsSets$testpro[ii])
+               chi_0=paramsSets$condoms[((ii-1)*times+1)]*projectParams$chi_0, 
+               alpha0=paramsSets$acts[((ii-1)*times+1)]*projectParams$alpha0,  
+               T= paramsSets$testing[((ii-1)*times+1)]*projectParams$T)
 parasets_lists_COVID[[ii]]$beta0 <- betaoption1(parameters = parasets_lists_COVID[[ii]])
-parasets_lists_COVID[[ii]]$alpha_t=c(1,paramsSets$acts[((ii-1)*times+2):((ii-1)*times+times)])
-parasets_lists_COVID[[ii]]$chi_t= c(1,paramsSets$condoms[((ii-1)*times+2):((ii-1)*times+times)])
-parasets_lists_COVID[[ii]]$T_p= c(1,paramsSets$testing[((ii-1)*times+2):((ii-1)*times+times)])
-parasets_lists_COVID[[ii]]$omega_p= c(1,paramsSets$prep[((ii-1)*times+2):((ii-1)*times+times)])
-parasets_lists_COVID[[ii]]$IM= paramsSets$immigrants[((ii-1)*times+1):((ii-1)*times+times)]
-parasets_lists_COVID[[ii]]$EM= paramsSets$emigrants[((ii-1)*times+1):((ii-1)*times+times)]
-parasets_lists_COVID[[ii]]$Death= paramsSets$Deaths[((ii-1)*times+1):((ii-1)*times+times)]
-parasets_lists_COVID[[ii]]$tau= c(paramsSets$proART[ii],paramsSets$tau[((ii-1)*times+2):((ii-1)*times+times)])
-parasets_lists_COVID[[ii]]$sigma= c(paramsSets$prosupp[ii],paramsSets$sigma[((ii-1)*times+2):((ii-1)*times+times)])
+parasets_lists_COVID[[ii]]$alpha_t=c(paramsSets$acts[((ii-1)*times+1):((ii-1)*times+times)])
+parasets_lists_COVID[[ii]]$chi_t= c(paramsSets$condoms[((ii-1)*times+1):((ii-1)*times+times)])
+parasets_lists_COVID[[ii]]$T_p= c(paramsSets$testing[((ii-1)*times+1):((ii-1)*times+times)])
+parasets_lists_COVID[[ii]]$omega_p= c(paramsSets$prep[((ii-1)*times+1):((ii-1)*times+times)])
+parasets_lists_COVID[[ii]]$IM= c(paramsSets$immigrants[((ii-1)*times+1):((ii-1)*times+times)])
+parasets_lists_COVID[[ii]]$EM= c(paramsSets$emigrants[((ii-1)*times+1):((ii-1)*times+times)])
+parasets_lists_COVID[[ii]]$Death= c(paramsSets$Deaths[((ii-1)*times+1):((ii-1)*times+times)])
+parasets_lists_COVID[[ii]]$tau= c(paramsSets$tau[((ii-1)*times+1):((ii-1)*times+times)])
+parasets_lists_COVID[[ii]]$sigma= c(paramsSets$sigma[((ii-1)*times+1):((ii-1)*times+times)])
 
-initial_state_values_sim_COVID<-list()
 initial_state_values_sim_COVID[[ii]]<-as.list(c(N=parasets_lists_COVID[[ii]]$N0,  
                                     I=parasets_lists_COVID[[ii]]$I0,
                                     d=parasets_lists_COVID[[ii]]$d0))
@@ -277,33 +278,35 @@ infectionresults_sim<-rbind(infectionresults_sim,data.frame(
  }
 
 ##scenaior without COVID-19 and remain##
+output_sim_base <- vector("list", numsims)
+parasets_lists_base <- vector("list", numsims)
+initial_state_values_sim_base<- vector("list", numsims)
+
 for (ii in 1:numsims) {
-output_sim_base <-list()
-parasets_lists_base <- list(c(1:numsims))
 parasets_lists_base[[ii]]<- c(N0= paramsSets$plhiv[ii], 
                I0=paramsSets$newinf[ii], 
                d0=paramsSets$prodiag[ii], 
-               tau0=paramsSets$proART[ii], 
-               sigma0=paramsSets$prosupp[ii] ,
+               tau0=paramsSets$tau_base[((ii-1)*times+1)]*projectParams$tau0, 
+               sigma0=paramsSets$sigma_base[((ii-1)*times+1)]*projectParams$sigma0,
                phi=paramsSets$effisupp[ii],  
-               omega0= paramsSets$PrEPcov[ii], 
+               omega0= paramsSets$prep_base[((ii-1)*times+1)]*projectParams$omega0, 
                epsilon_PrEP=paramsSets$effiPrEP[ii],  
                epsilon_condom=paramsSets$efficon[ii],   
-               chi_0=paramsSets$conduse[ii], 
-               alpha0=paramsSets$sexact[ii],  
-               T= paramsSets$testpro[ii])
+               chi_0=paramsSets$condoms_base[((ii-1)*times+1)]*projectParams$chi_0, 
+               alpha0=paramsSets$acts_base[((ii-1)*times+1)]*projectParams$alpha0,  
+               T= paramsSets$testing_base[((ii-1)*times+1)]*projectParams$T)
 parasets_lists_base[[ii]]$beta0 <- betaoption1(parameters = parasets_lists_base[[ii]])
-parasets_lists_base[[ii]]$alpha_t=c(1,paramsSets$acts_base[((ii-1)*times+2):((ii-1)*times+times)])
-parasets_lists_base[[ii]]$chi_t= c(1,paramsSets$condoms_base[((ii-1)*times+2):((ii-1)*times+times)])
-parasets_lists_base[[ii]]$T_p= c(1,paramsSets$testing_base[((ii-1)*times+2):((ii-1)*times+times)])
-parasets_lists_base[[ii]]$omega_p= c(1,paramsSets$prep_base[((ii-1)*times+2):((ii-1)*times+times)])
-parasets_lists_base[[ii]]$IM= rep(paramsSets$immigrants[((ii-1)*times+1)],times)
-parasets_lists_base[[ii]]$EM= rep(paramsSets$emigrants[((ii-1)*times+1)],times)
-parasets_lists_base[[ii]]$Death= rep(paramsSets$Deaths[((ii-1)*times+1)],times)
-parasets_lists_base[[ii]]$tau= rep(paramsSets$proART[ii],times)
-parasets_lists_base[[ii]]$sigma= rep(paramsSets$prosupp[ii],times)
+parasets_lists_base[[ii]]$alpha_t=c(paramsSets$acts_base[((ii-1)*times+1):((ii-1)*times+times)])
+parasets_lists_base[[ii]]$chi_t= c(paramsSets$condoms_base[((ii-1)*times+1):((ii-1)*times+times)])
+parasets_lists_base[[ii]]$T_p= c(paramsSets$testing_base[((ii-1)*times+1):((ii-1)*times+times)])
+parasets_lists_base[[ii]]$omega_p= c(paramsSets$prep_base[((ii-1)*times+1):((ii-1)*times+times)])
+parasets_lists_base[[ii]]$IM= c(paramsSets$immigrants_base[((ii-1)*times+1):((ii-1)*times+times)]*projectParams$IM[1])
+parasets_lists_base[[ii]]$EM= c(paramsSets$emigrants_base[((ii-1)*times+1):((ii-1)*times+times)]*projectParams$EM[1])
+parasets_lists_base[[ii]]$Death= c(paramsSets$Deaths_base[((ii-1)*times+1):((ii-1)*times+times)]*projectParams$Death[1])
+parasets_lists_base[[ii]]$tau= c(paramsSets$tau_base[((ii-1)*times+1):((ii-1)*times+times)]*projectParams$tau0)
+parasets_lists_base[[ii]]$sigma= c(paramsSets$sigma_base[((ii-1)*times+1):((ii-1)*times+times)]*projectParams$sigma0)
 
-initial_state_values_sim_base<-list()
+
 initial_state_values_sim_base[[ii]]<-as.list(c(N=parasets_lists_base[[ii]]$N0,  
                                     I=parasets_lists_base[[ii]]$I0,
                                     d=parasets_lists_base[[ii]]$d0))
@@ -323,34 +326,35 @@ infectionresults_sim<-rbind(infectionresults_sim,data.frame(
 
 }
 
+output_sim_scenario3 <- vector("list", numsims)
+parasets_lists_scenario3 <- vector("list", numsims)
+initial_state_values_sim_scenario3<- vector("list", numsims)
 ##scenario Without COVID-19 impact and with prep promotion##
 for (ii in 1:numsims) {
-output_sim_scenario3 <-list()
-parasets_lists_scenario3 <- list(c(1:numsims))
 parasets_lists_scenario3[[ii]]<- c(N0= paramsSets$plhiv[ii], 
                I0=paramsSets$newinf[ii], 
                d0=paramsSets$prodiag[ii], 
-               tau0=paramsSets$proART[ii], 
-               sigma0=paramsSets$prosupp[ii] ,
+               tau0=paramsSets$tau_base[((ii-1)*times+1)]*projectParams$tau0, 
+               sigma0=paramsSets$sigma_base[((ii-1)*times+1)]*projectParams$sigma0 ,
                phi=paramsSets$effisupp[ii],  
-               omega0= paramsSets$PrEPcov[ii], 
+               omega0= paramsSets$prep_scenario3[((ii-1)*times+1)]*projectParams$omega0, 
                epsilon_PrEP=paramsSets$effiPrEP[ii],  
                epsilon_condom=paramsSets$efficon[ii],   
-               chi_0=paramsSets$conduse[ii], 
-               alpha0=paramsSets$sexact[ii],  
-               T= paramsSets$testpro[ii])
+               chi_0=paramsSets$condoms_scenario3[((ii-1)*times+1)]*projectParams$chi_0, 
+               alpha0=paramsSets$acts_base[((ii-1)*times+1)]*projectParams$alpha0,  
+               T= paramsSets$testing_base[((ii-1)*times+1)]*projectParams$T)
 parasets_lists_scenario3[[ii]]$beta0 <- betaoption1(parameters = parasets_lists_scenario3[[ii]])
-parasets_lists_scenario3[[ii]]$alpha_t=c(1,paramsSets$acts_base[((ii-1)*times+2):((ii-1)*times+times)])
-parasets_lists_scenario3[[ii]]$chi_t= c(1,paramsSets$condoms_scenario3[((ii-1)*times+2):((ii-1)*times+times)])
-parasets_lists_scenario3[[ii]]$T_p= c(1,paramsSets$testing_base[((ii-1)*times+2):((ii-1)*times+times)])
-parasets_lists_scenario3[[ii]]$omega_p= c(1,paramsSets$prep_scenario3[((ii-1)*times+2):((ii-1)*times+times)])
-parasets_lists_scenario3[[ii]]$IM= rep(paramsSets$immigrants[((ii-1)*times+1)],times)
-parasets_lists_scenario3[[ii]]$EM= rep(paramsSets$emigrants[((ii-1)*times+1)],times)
-parasets_lists_scenario3[[ii]]$Death= rep(paramsSets$Deaths[((ii-1)*times+1)],times)
-parasets_lists_scenario3[[ii]]$tau= rep(paramsSets$proART[ii],times)
-parasets_lists_scenario3[[ii]]$sigma= rep(paramsSets$prosupp[ii],times)
+parasets_lists_scenario3[[ii]]$alpha_t=c(paramsSets$acts_base[((ii-1)*times+1):((ii-1)*times+times)])
+parasets_lists_scenario3[[ii]]$chi_t= c(paramsSets$condoms_scenario3[((ii-1)*times+1):((ii-1)*times+times)])
+parasets_lists_scenario3[[ii]]$T_p= c(paramsSets$testing_base[((ii-1)*times+1):((ii-1)*times+times)])
+parasets_lists_scenario3[[ii]]$omega_p= c(paramsSets$prep_scenario3[((ii-1)*times+1):((ii-1)*times+times)])
+parasets_lists_scenario3[[ii]]$IM= c(paramsSets$immigrants_base[((ii-1)*times+1):((ii-1)*times+times)]*projectParams$IM[1])
+parasets_lists_scenario3[[ii]]$EM= c(paramsSets$emigrants_base[((ii-1)*times+1):((ii-1)*times+times)]*projectParams$EM[1])
+parasets_lists_scenario3[[ii]]$Death= c(paramsSets$Deaths_base[((ii-1)*times+1):((ii-1)*times+times)]*projectParams$Death[1])
+parasets_lists_scenario3[[ii]]$tau= c(paramsSets$tau_base[((ii-1)*times+1):((ii-1)*times+times)]*projectParams$tau0)
+parasets_lists_scenario3[[ii]]$sigma= c(paramsSets$sigma_base[((ii-1)*times+1):((ii-1)*times+times)]*projectParams$sigma0)
 
-initial_state_values_sim_scenario3<-list()
+
 initial_state_values_sim_scenario3[[ii]]<-as.list(c(N=parasets_lists_scenario3[[ii]]$N0,  
                                     I=parasets_lists_scenario3[[ii]]$I0,
                                     d=parasets_lists_scenario3[[ii]]$d0))
@@ -419,6 +423,24 @@ quantile_interval_band_newHIV<-rbind(quantile_interval_band_newHIV,data.frame(ti
                    upperbound = quantile((infectionresults_sim %>% filter(scenarios == "Without COVID-19 impact and with prep promotion", timestep == ii-1))$newHIV, probs = 0.975, names = FALSE),
                    scenarios = "Without COVID-19 impact and with prep promotion"))
 }
+
+###create band for 95% interval in each timestep##
+quantile_interval_band_newdiagnoses<-data.frame( 
+                       timestep = integer(),
+                       lowerbound = numeric(),
+                       upperbound = numeric(),
+                       scenarios = character())
+
+for (ii in 1:(times)) {
+quantile_interval_band_newdiagnoses<-rbind(quantile_interval_band_newdiagnoses,data.frame(timestep = ii-1,
+                   lowerbound =  quantile((infectionresults_sim %>% filter(scenarios == "With COVID-19 impact", timestep == ii-1))$diagnosis, probs = 0.025, names = FALSE),
+                   upperbound = quantile((infectionresults_sim %>% filter(scenarios == "With COVID-19 impact", timestep == ii-1))$diagnosis, probs = 0.975, names = FALSE),
+                   scenarios = "With COVID-19 impact"))
+}
+
+quantile_interval_band_newdiagnoses$diagnosis<-infectionresults$diagnosis[infectionresults$scenarios == "With COVID-19 impact"]
+
+
 
 #show all the results with 95% CI in a table
 infectionresults_95CI<-data.frame( 
@@ -531,7 +553,7 @@ newinfectionresults_peryear_95PI<-rbind(newinfectionresults_peryear_95PI,data.fr
                                         diagnosis_upper = round(quantile((diagnosis_peryear_sim %>% filter(scenarios == "Without COVID-19 impact and with prep promotion", year ==ii))$Sum, probs = 0.975, names = FALSE),0)))
 }
 
-adjustmentvalue_diagnosis_2022<-12/8
+adjustmentvalue_diagnosis_2022<-1#2/8
 newinfectionresults_peryear_95PI$diagnosis_value <- ifelse(newinfectionresults_peryear_95PI$year %in% c("2022"), newinfectionresults_peryear_95PI$diagnosis_value*adjustmentvalue_diagnosis_2022, newinfectionresults_peryear_95PI$diagnosis_value)
 
 newinfectionresults_peryear_95PI$diagnosis_lower <- ifelse(newinfectionresults_peryear_95PI$year %in% c("2022"), newinfectionresults_peryear_95PI$diagnosis_lower*adjustmentvalue_diagnosis_2022, newinfectionresults_peryear_95PI$diagnosis_lower)
@@ -547,19 +569,358 @@ newinfectionresults_peryear_95PI$newHIV_upper <- ifelse(newinfectionresults_pery
 newinfectionresults_peryear_95PI
 quantile_interval_band_newHIV$newHIV<-infectionresults$newHIV
 
+
+#### Function to calculate percentage reduction with 95% PI for main scenarios####
+calculate_main_reduction_with_PI <- function(baseline_scenario, comparison_scenario, outcome_var, timepoint = 32) {
+  
+  # Get baseline values (Without COVID-19 impact and remain)
+  baseline_data <- infectionresults_sim %>% 
+    filter(scenarios == baseline_scenario, timestep == timepoint)
+  
+  # Get comparison values 
+  comparison_data <- infectionresults_sim %>% 
+    filter(scenarios == comparison_scenario, timestep == timepoint)
+  
+  # Calculate percentage reduction for each simulation
+  baseline_values <- baseline_data[[outcome_var]]
+  comparison_values <- comparison_data[[outcome_var]]
+  
+  # Calculate percentage change: (comparison - baseline) / baseline * 100
+  percent_changes <- (comparison_values - baseline_values) / baseline_values * 100
+  
+  # Calculate absolute difference in cases
+  case_differences <- comparison_values - baseline_values
+  
+  # Calculate summary statistics
+  median_percent <- median(percent_changes)
+  pi_025_percent <- quantile(percent_changes, 0.025)
+  pi_975_percent <- quantile(percent_changes, 0.975)
+  
+  median_cases <- median(case_differences)
+  pi_025_cases <- quantile(case_differences, 0.025)
+  pi_975_cases <- quantile(case_differences, 0.975)
+  
+  return(list(
+    percent_reduction = list(
+      median = round(median_percent, 1),
+      pi_025 = round(pi_025_percent, 1),
+      pi_975 = round(pi_975_percent, 1)
+    ),
+    case_difference = list(
+      median = round(median_cases, 0),
+      pi_025 = round(pi_025_cases, 0),
+      pi_975 = round(pi_975_cases, 0)
+    )
+  ))
+}
+
+# Function to calculate yearly statistics with 95% PI
+calculate_yearly_stats_with_PI <- function(scenario_name, target_year) {
+  # Get data for the last timestep of the target year
+  if (target_year == 2020) {
+    target_timestep <- 12  # December 2020
+  } else if (target_year == 2021) {
+    target_timestep <- 24  # December 2021
+  } else if (target_year == 2022) {
+    target_timestep <- 32  # August 2022
+  }
+  
+  data <- infectionresults_sim %>% 
+    filter(scenarios == scenario_name, timestep == target_timestep)
+  
+  csum_infection_stats <- list(
+    median = round(median(data$csum_infection), 0),
+    pi_025 = round(quantile(data$csum_infection, 0.025), 0),
+    pi_975 = round(quantile(data$csum_infection, 0.975), 0)
+  )
+  
+  return(list(
+    csum_infection = csum_infection_stats
+  ))
+}
+
+# Calculate yearly statistics for 2020 comparison
+no_covid_2020 <- calculate_yearly_stats_with_PI("Without COVID-19 impact and remain", 2020)
+covid_2020 <- calculate_yearly_stats_with_PI("With COVID-19 impact", 2020)
+
+# Calculate 2020 percentage reduction
+covid_2020_data <- infectionresults_sim %>% 
+  filter(scenarios == "With COVID-19 impact", timestep == 12)
+no_covid_2020_data <- infectionresults_sim %>% 
+  filter(scenarios == "Without COVID-19 impact and remain", timestep == 12)
+
+covid_2020_percent_changes <- (covid_2020_data$csum_infection - no_covid_2020_data$csum_infection) / no_covid_2020_data$csum_infection * 100
+
+covid_2020_reduction <- list(
+  median = round(median(covid_2020_percent_changes), 1),
+  pi_025 = round(quantile(covid_2020_percent_changes, 0.025), 1),
+  pi_975 = round(quantile(covid_2020_percent_changes, 0.975), 1)
+)
+
+# Function to format results for manuscript
+format_main_result <- function(median_val, pi_025, pi_975, is_percent = TRUE) {
+  if (is_percent) {
+    if (median_val < 0) {
+      return(paste0(abs(median_val), "% [95% PI: ", abs(pi_975), "–", abs(pi_025), "%]"))
+    } else {
+      return(paste0(median_val, "% [95% PI: ", pi_025, "–", pi_975, "%]"))
+    }
+  } else {
+    return(paste0(median_val, " [95% PI: ", pi_025, "–", pi_975, "]"))
+  }
+}
+
+# Define main scenarios
+main_scenarios <- c(
+  "Without COVID-19 impact and remain",
+  "With COVID-19 impact", 
+  "Without COVID-19 impact and with prep promotion"
+)
+
+main_scenario_names <- c(
+  "No COVID-19 scenario",
+  "COVID-19 scenario",
+  "No COVID-19 plus PrEP scenario"
+)
+
+# Calculate percentage reductions
+# COVID-19 vs No COVID-19
+covid_infection_reduction <- calculate_main_reduction_with_PI(
+  "Without COVID-19 impact and remain", 
+  "With COVID-19 impact", 
+  "csum_infection"
+)
+
+covid_diagnosis_reduction <- calculate_main_reduction_with_PI(
+  "Without COVID-19 impact and remain", 
+  "With COVID-19 impact", 
+  "csum_diagnosis"
+)
+
+# PrEP scenario vs No COVID-19
+prep_infection_reduction <- calculate_main_reduction_with_PI(
+  "Without COVID-19 impact and remain", 
+  "Without COVID-19 impact and with prep promotion", 
+  "csum_infection"
+)
+
+prep_diagnosis_reduction <- calculate_main_reduction_with_PI(
+  "Without COVID-19 impact and remain", 
+  "Without COVID-19 impact and with prep promotion", 
+  "csum_diagnosis"
+)
+
+covid_totalhiv_reduction <- calculate_main_reduction_with_PI(
+  "Without COVID-19 impact and remain", 
+  "With COVID-19 impact", 
+  "totalHIV"
+)
+
+prep_totalhiv_reduction <- calculate_main_reduction_with_PI(
+  "Without COVID-19 impact and remain", 
+  "Without COVID-19 impact and with prep promotion", 
+  "totalHIV"
+)
+
+prep_infection_reduction_lastmonth <- calculate_main_reduction_with_PI(
+  "Without COVID-19 impact and remain", 
+  "Without COVID-19 impact and with prep promotion", 
+  "newHIV"
+)
+
+# Create percentage of changes of cumulative infections and diagnoses with 95% PI table
+reductions_table <- data.frame(
+  Comparison = character(),
+  Outcome = character(),
+  Percent_Reduction_Median = numeric(),
+  Percent_Reduction_PI_025 = numeric(),
+  Percent_Reduction_PI_975 = numeric(),
+  Case_Difference_Median = numeric(),
+  Case_Difference_PI_025 = numeric(),
+  Case_Difference_PI_975 = numeric(),
+  Formatted_Percentage = character(),
+  Formatted_Cases = character(),
+  stringsAsFactors = FALSE
+)
+
+# Add COVID-19 vs No COVID-19 comparisons
+reductions_table <- rbind(reductions_table, data.frame(
+  Comparison = "COVID-19 vs No COVID-19",
+  Outcome = "Cumulative Infections",
+  Percent_Reduction_Median = covid_infection_reduction$percent_reduction$median,
+  Percent_Reduction_PI_025 = covid_infection_reduction$percent_reduction$pi_025,
+  Percent_Reduction_PI_975 = covid_infection_reduction$percent_reduction$pi_975,
+  Case_Difference_Median = covid_infection_reduction$case_difference$median,
+  Case_Difference_PI_025 = covid_infection_reduction$case_difference$pi_025,
+  Case_Difference_PI_975 = covid_infection_reduction$case_difference$pi_975,
+  Formatted_Percentage = format_main_result(abs(covid_infection_reduction$percent_reduction$median), 
+                                           abs(covid_infection_reduction$percent_reduction$pi_975), 
+                                           abs(covid_infection_reduction$percent_reduction$pi_025), TRUE),
+  Formatted_Cases = format_main_result(abs(covid_infection_reduction$case_difference$median), 
+                                      abs(covid_infection_reduction$case_difference$pi_975), 
+                                      abs(covid_infection_reduction$case_difference$pi_025), FALSE)
+))
+
+reductions_table <- rbind(reductions_table, data.frame(
+  Comparison = "COVID-19 vs No COVID-19",
+  Outcome = "Cumulative Diagnoses",
+  Percent_Reduction_Median = covid_diagnosis_reduction$percent_reduction$median,
+  Percent_Reduction_PI_025 = covid_diagnosis_reduction$percent_reduction$pi_025,
+  Percent_Reduction_PI_975 = covid_diagnosis_reduction$percent_reduction$pi_975,
+  Case_Difference_Median = covid_diagnosis_reduction$case_difference$median,
+  Case_Difference_PI_025 = covid_diagnosis_reduction$case_difference$pi_025,
+  Case_Difference_PI_975 = covid_diagnosis_reduction$case_difference$pi_975,
+  Formatted_Percentage = format_main_result(abs(covid_diagnosis_reduction$percent_reduction$median), 
+                                           abs(covid_diagnosis_reduction$percent_reduction$pi_975), 
+                                           abs(covid_diagnosis_reduction$percent_reduction$pi_025), TRUE),
+  Formatted_Cases = format_main_result(abs(covid_diagnosis_reduction$case_difference$median), 
+                                      abs(covid_diagnosis_reduction$case_difference$pi_975), 
+                                      abs(covid_diagnosis_reduction$case_difference$pi_025), FALSE)
+))
+
+
+# Add PrEP vs No COVID-19 comparisons
+reductions_table <- rbind(reductions_table, data.frame(
+  Comparison = "PrEP vs No COVID-19",
+  Outcome = "Cumulative Infections",
+  Percent_Reduction_Median = prep_infection_reduction$percent_reduction$median,
+  Percent_Reduction_PI_025 = prep_infection_reduction$percent_reduction$pi_025,
+  Percent_Reduction_PI_975 = prep_infection_reduction$percent_reduction$pi_975,
+  Case_Difference_Median = prep_infection_reduction$case_difference$median,
+  Case_Difference_PI_025 = prep_infection_reduction$case_difference$pi_025,
+  Case_Difference_PI_975 = prep_infection_reduction$case_difference$pi_975,
+  Formatted_Percentage = format_main_result(abs(prep_infection_reduction$percent_reduction$median), 
+                                           abs(prep_infection_reduction$percent_reduction$pi_975), 
+                                           abs(prep_infection_reduction$percent_reduction$pi_025), TRUE),
+  Formatted_Cases = format_main_result(abs(prep_infection_reduction$case_difference$median), 
+                                      abs(prep_infection_reduction$case_difference$pi_975), 
+                                      abs(prep_infection_reduction$case_difference$pi_025), FALSE)
+))
+
+reductions_table <- rbind(reductions_table, data.frame(
+  Comparison = "PrEP vs No COVID-19",
+  Outcome = "Cumulative Diagnoses",
+  Percent_Reduction_Median = prep_diagnosis_reduction$percent_reduction$median,
+  Percent_Reduction_PI_025 = prep_diagnosis_reduction$percent_reduction$pi_025,
+  Percent_Reduction_PI_975 = prep_diagnosis_reduction$percent_reduction$pi_975,
+  Case_Difference_Median = prep_diagnosis_reduction$case_difference$median,
+  Case_Difference_PI_025 = prep_diagnosis_reduction$case_difference$pi_025,
+  Case_Difference_PI_975 = prep_diagnosis_reduction$case_difference$pi_975,
+  Formatted_Percentage = format_main_result(abs(prep_diagnosis_reduction$percent_reduction$median), 
+                                           abs(prep_diagnosis_reduction$percent_reduction$pi_975), 
+                                           abs(prep_diagnosis_reduction$percent_reduction$pi_025), TRUE),
+  Formatted_Cases = format_main_result(abs(prep_diagnosis_reduction$case_difference$median), 
+                                      abs(prep_diagnosis_reduction$case_difference$pi_975), 
+                                      abs(prep_diagnosis_reduction$case_difference$pi_025), FALSE)
+))
+
+reductions_table <- rbind(reductions_table, data.frame(
+  Comparison = "COVID-19 vs No COVID-19",
+  Outcome = "Total HIV",
+  Percent_Reduction_Median = covid_totalhiv_reduction$percent_reduction$median,
+  Percent_Reduction_PI_025 = covid_totalhiv_reduction$percent_reduction$pi_025,
+  Percent_Reduction_PI_975 = covid_totalhiv_reduction$percent_reduction$pi_975,
+  Case_Difference_Median = covid_totalhiv_reduction$case_difference$median,
+  Case_Difference_PI_025 = covid_totalhiv_reduction$case_difference$pi_025,
+  Case_Difference_PI_975 = covid_totalhiv_reduction$case_difference$pi_975,
+  Formatted_Percentage = if(covid_totalhiv_reduction$percent_reduction$median < 0) {
+    format_main_result(abs(covid_totalhiv_reduction$percent_reduction$median), 
+                       abs(covid_totalhiv_reduction$percent_reduction$pi_975), 
+                       abs(covid_totalhiv_reduction$percent_reduction$pi_025), TRUE)
+  } else {
+    format_main_result(covid_totalhiv_reduction$percent_reduction$median, 
+                       covid_totalhiv_reduction$percent_reduction$pi_025, 
+                       covid_totalhiv_reduction$percent_reduction$pi_975, TRUE)
+  },
+  Formatted_Cases = if(covid_totalhiv_reduction$case_difference$median < 0) {
+    format_main_result(abs(covid_totalhiv_reduction$case_difference$median), 
+                       abs(covid_totalhiv_reduction$case_difference$pi_975), 
+                       abs(covid_totalhiv_reduction$case_difference$pi_025), FALSE)
+  } else {
+    format_main_result(covid_totalhiv_reduction$case_difference$median, 
+                       covid_totalhiv_reduction$case_difference$pi_025, 
+                       covid_totalhiv_reduction$case_difference$pi_975, FALSE)
+  }
+))
+
+reductions_table <- rbind(reductions_table, data.frame(
+  Comparison = "PrEP vs No COVID-19",
+  Outcome = "Total HIV",
+  Percent_Reduction_Median = prep_totalhiv_reduction$percent_reduction$median,
+  Percent_Reduction_PI_025 = prep_totalhiv_reduction$percent_reduction$pi_025,
+  Percent_Reduction_PI_975 = prep_totalhiv_reduction$percent_reduction$pi_975,
+  Case_Difference_Median = prep_totalhiv_reduction$case_difference$median,
+  Case_Difference_PI_025 = prep_totalhiv_reduction$case_difference$pi_025,
+  Case_Difference_PI_975 = prep_totalhiv_reduction$case_difference$pi_975,
+  Formatted_Percentage = if(prep_totalhiv_reduction$percent_reduction$median < 0) {
+    format_main_result(abs(prep_totalhiv_reduction$percent_reduction$median), 
+                       abs(prep_totalhiv_reduction$percent_reduction$pi_975), 
+                       abs(prep_totalhiv_reduction$percent_reduction$pi_025), TRUE)
+  } else {
+    format_main_result(prep_totalhiv_reduction$percent_reduction$median, 
+                       prep_totalhiv_reduction$percent_reduction$pi_025, 
+                       prep_totalhiv_reduction$percent_reduction$pi_975, TRUE)
+  },
+  Formatted_Cases = if(prep_totalhiv_reduction$case_difference$median < 0) {
+    format_main_result(abs(prep_totalhiv_reduction$case_difference$median), 
+                       abs(prep_totalhiv_reduction$case_difference$pi_975), 
+                       abs(prep_totalhiv_reduction$case_difference$pi_025), FALSE)
+  } else {
+    format_main_result(prep_totalhiv_reduction$case_difference$median, 
+                       prep_totalhiv_reduction$case_difference$pi_025, 
+                       prep_totalhiv_reduction$case_difference$pi_975, FALSE)
+  }
+))
+
+
+# Add 2020-specific reduction
+reductions_table <- rbind(reductions_table, data.frame(
+  Comparison = "COVID-19 vs No COVID-19",
+  Outcome = "2020 Infections Only",
+  Percent_Reduction_Median = covid_2020_reduction$median,
+  Percent_Reduction_PI_025 = covid_2020_reduction$pi_025,
+  Percent_Reduction_PI_975 = covid_2020_reduction$pi_975,
+  Case_Difference_Median = covid_2020$csum_infection$median - no_covid_2020$csum_infection$median,
+  Case_Difference_PI_025 = quantile(covid_2020_data$csum_infection - no_covid_2020_data$csum_infection, 0.025),
+  Case_Difference_PI_975 = quantile(covid_2020_data$csum_infection - no_covid_2020_data$csum_infection, 0.975),
+  Formatted_Percentage = format_main_result(abs(covid_2020_reduction$median), 
+                                           abs(covid_2020_reduction$pi_975), 
+                                           abs(covid_2020_reduction$pi_025), TRUE),
+  Formatted_Cases = format_main_result(abs(covid_2020$csum_infection$median - no_covid_2020$csum_infection$median), 
+                                      abs(round(quantile(covid_2020_data$csum_infection - no_covid_2020_data$csum_infection, 0.975), 0)), 
+                                      abs(round(quantile(covid_2020_data$csum_infection - no_covid_2020_data$csum_infection, 0.025), 0)), FALSE)
+))
+
+reductions_table <- rbind(reductions_table, data.frame(
+  Comparison = "PrEP vs No COVID-19",
+  Outcome = "Last month Infections",
+  Percent_Reduction_Median = prep_infection_reduction_lastmonth$percent_reduction$median,
+  Percent_Reduction_PI_025 = prep_infection_reduction_lastmonth$percent_reduction$pi_025,
+  Percent_Reduction_PI_975 = prep_infection_reduction_lastmonth$percent_reduction$pi_975,
+  Case_Difference_Median = prep_infection_reduction_lastmonth$case_difference$median,
+  Case_Difference_PI_025 = prep_infection_reduction_lastmonth$case_difference$pi_025,
+  Case_Difference_PI_975 = prep_infection_reduction_lastmonth$case_difference$pi_975,
+  Formatted_Percentage = format_main_result(abs(prep_infection_reduction_lastmonth$percent_reduction$median), 
+                                           abs(prep_infection_reduction_lastmonth$percent_reduction$pi_975), 
+                                           abs(prep_infection_reduction_lastmonth$percent_reduction$pi_025), TRUE),
+  Formatted_Cases = format_main_result(abs(prep_infection_reduction_lastmonth$case_difference$median), 
+                                      abs(prep_infection_reduction_lastmonth$case_difference$pi_975), 
+                                      abs(prep_infection_reduction_lastmonth$case_difference$pi_025), FALSE)
+))
+
 #Save output in some form Rda file and/or csv
 # If file not already created make sure it is not overwritten
-if (!file.exists(file.path(resultsFolder, "infectionresults_sim_20241020.csv"))) {
-write.csv(infectionresults_sim, file = file.path(resultsFolder, "infectionresults_sim_20241020.csv"))
+if (!file.exists(file.path(resultsFolder, "infectionresults_sim_20250612.csv"))) {
+write.csv(infectionresults_sim, file = file.path(resultsFolder, "infectionresults_sim_20250612.csv"))
 }
-if (!file.exists(file.path(resultsFolder, "summarized_results_95PI_20241020.csv"))) {
-write.csv(infectionresults_95CI, file = file.path(resultsFolder, "summarized_results_95PI_20241020.csv"))
+if (!file.exists(file.path(resultsFolder, "summarized_results_95PI_20250612.csv"))) {
+write.csv(infectionresults_95CI, file = file.path(resultsFolder, "summarized_results_95PI_20250612.csv"))
 }
-if (!file.exists(file.path(resultsFolder, "monthly_results_95PI_20241020.csv"))) {
-write.csv(quantile_interval_band_newHIV, file = file.path(resultsFolder, "monthly_results_95PI_20241020.csv"))
+if (!file.exists(file.path(resultsFolder, "monthly_results_95PI_20250612.csv"))) {
+write.csv(quantile_interval_band_newHIV, file = file.path(resultsFolder, "monthly_results_95PI_20250612.csv"))
 }
-if (!file.exists(file.path(resultsFolder, "yearly_cumulative_results_95PI_20241020.csv"))) {
-write.csv(newinfectionresults_peryear_95PI, file = file.path(resultsFolder, "yearly_cumulative_results_95PI_20241020.csv"))
+if (!file.exists(file.path(resultsFolder, "yearly_cumulative_results_95PI_20250612.csv"))) {
+write.csv(newinfectionresults_peryear_95PI, file = file.path(resultsFolder, "yearly_cumulative_results_95PI_20250612.csv"))
 }
 
 
